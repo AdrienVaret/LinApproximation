@@ -27,7 +27,7 @@ public class Approximation {
 
 	private static final int MAX_CYCLE_SIZE = 4;
 	private static long computeCyclesTime;
-	private static int [][] circuitsToSubstract;
+	public static int [][] circuitsToSubstract;
 
 	public static List<ArrayList<Integer>> computeRedundantCycles(UndirGraph molecule){
 
@@ -160,7 +160,14 @@ public class Approximation {
 	        
 	        model.cycle(g).post();
 	        model.arithm(model.nbNodes(g), "=", size).post();
-	        
+	    /*    
+	        model.or(model.arithm(model.nbNodes(g), "=", 6),
+	        		 model.arithm(model.nbNodes(g), "=", 10),
+	        		 model.arithm(model.nbNodes(g), "=", 14),
+	        		 model.arithm(model.nbNodes(g), "=", 18),
+	        		 model.arithm(model.nbNodes(g), "=", 22),
+	        		 model.arithm(model.nbNodes(g), "=", 26)).post();
+	    */    
 	        model.getSolver().setSearch(new IntStrategy(boolEdges, new FirstFail(model), new IntDomainMin()));
 			Solver solver = model.getSolver();
 			
@@ -885,15 +892,15 @@ public class Approximation {
 		return -1;
 	}
 	
-	public static Couple<Integer> getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
+	public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
 		
 		int n = ((cycle.size() / 2) - 2)/4;
 		
 		if (n == 1)
-			return new Couple<Integer>(0, -1);
+			return 0;
 		
 		else if (n == 2)
-			return new Couple<Integer>(1, -1);
+			return 1;
 		
 		else {
 			EdgeSet edges = computeStraightEdges(molecule, cycle);
@@ -901,10 +908,10 @@ public class Approximation {
 			if (edges.size() == 2) {
 				
 				if (n == 3)
-					return new Couple<Integer>(2, 1);
+					return 2;
 				
 				if (n == 4)
-					return new Couple<Integer>(5, 1);
+					return 5;
 			}
 			
 			
@@ -923,10 +930,10 @@ public class Approximation {
 					}
 					
 					if (condition)
-						return new Couple<Integer>(3, 1);
+						return 3;
 					
 					else
-						return new Couple<Integer>(4, 1);
+						return 4;
 				
 				}
 				
@@ -943,10 +950,10 @@ public class Approximation {
 					}
 					
 					if (condition)
-						return new Couple<Integer>(6, 1);
+						return 6;
 					
 					else
-						return new Couple<Integer>(9, 1);
+						return 9;
 				}
 			}
 			
@@ -975,38 +982,38 @@ public class Approximation {
 					if (i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) {
 						
 						if (i4.x1() < i2_1.x1() && i4.x2() > i2_1.x2())
-							return new Couple<Integer>(4, 2);
+							return 4;
 						
 						if ((i4.x1() < i2_1.x1() && i4.x2() < i2_1.x2()) ||
 							(i4.x1() > i2_1.x1() && i4.x2() > i2_1.x2()))
-							return new Couple<Integer>(7, -1);
+							return 7;
 							
 					}
 					
 					else if (i2_1.x1() != i2_2.x1() && i2_1.x1() != i2_2.x2()) {
 						
 						if (i2_1.y1() == i2_2.y1() && i2_1.y2() == i2_2.y2())
-							return new Couple<Integer>(11, 1);
+							return 11;
 						
 						if ((i2_1.x1() == i4.x1() || i2_2.x1() == i4.x1()) ||
 							(i2_1.x2() == i4.x2() || i2_2.x2() == i4.x2()))
-							return new Couple<Integer>(11, 2);
+							return 11;
 						
 						if ((i4.y1() > Math.min(i2_1.y1(), i2_2.y1()) && i4.y1() < Math.max(i2_1.y1(), i2_2.y1())) &&
 							(i4.y2() > Math.min(i2_1.y2(), i2_2.y2()) && i4.y2() < Math.max(i2_1.y2(), i2_2.y2())))
-							return new Couple<Integer>(13, 1);
+							return 13;
 						
 						else 
-							return new Couple<Integer>(6, 2);
+							return 6;
 					}
 				}
 				
 				if (intervalsSize2.size() == 1 && intervalsSize4.size() == 1 && intervalsSize6.size() == 1) {
-					return new Couple<Integer>(10, 1);
+					return 10;
 				}
 				
 				if (intervalsSize2.size() == 0 && intervalsSize4.size() == 3 && intervalsSize6.size() == 0) {
-					return new Couple<Integer>(10, 2);
+					return 10;
 				}
 				
 				if (intervalsSize2.size() == 2 && intervalsSize4.size() == 0 && intervalsSize6.size() == 1) {
@@ -1015,9 +1022,9 @@ public class Approximation {
 					Interval i2_2 = intervalsSize2.get(1);
 					
 					if (i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) 	
-						return new Couple<Integer>(8, 2);
+						return 8;
 					else
-						return new Couple<Integer>(14, 2);
+						return 14;
 				}
 				
 				if (intervalsSize2.size() == 1 && intervalsSize4.size() == 2 && intervalsSize6.size() == 0) {
@@ -1028,20 +1035,20 @@ public class Approximation {
 					
 					if ((i2.y1() > Math.min(i4_1.y1(), i4_2.y1()) && i2.y1() < Math.max(i4_1.y1(), i4_2.y1())) &&
 						(i2.y2() > Math.min(i4_1.y2(), i4_2.y2()) && i2.y2() < Math.max(i4_1.y2(), i4_2.y2()))) 
-						return new Couple<Integer>(14, 1);
+						return 14;
 					
 					
 					else if ((i4_1.x1() == i2.x1() || i4_1.x2() == i2.x2()) ||
 						(i4_2.x1() == i2.x1() || i4_2.x2() == i2.x2()))
-						return new Couple<Integer>(8, 1);
+						return 8;
 					
 					else
-						return new Couple<Integer>(9, 2);
+						return 9;
 						
 				}
 				
 				if (intervalsSize2.size() == 0 && intervalsSize4.size() == 2 && intervalsSize6.size() == 1)
-					return new Couple<Integer>(12, -1);
+					return 12;
 				
 				if (intervalsSize2.size() == 3 && intervalsSize4.size() == 0 && intervalsSize6.size() == 0) {
 					
@@ -1052,10 +1059,10 @@ public class Approximation {
 					if ((i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) || 
 						(i2_1.x1() == i2_3.x1() && i2_1.x2() == i2_3.x2()) ||
 						(i2_2.x1() == i2_3.x1() && i2_3.x2() == i2_3.x2())) 
-						return new Couple<Integer>(3, 2);
+						return 3;
 					
 					else
-						return new Couple<Integer>(2, 2);
+						return 2;
 				}
 					
 			}
@@ -1075,14 +1082,14 @@ public class Approximation {
 					(i2_2.x1() == i2_3.x1() && i2_2.x2() == i2_3.x2()) ||
 					(i2_2.x1() == i2_4.x1() && i2_2.x2() == i2_4.x2()) ||
 					(i2_3.x1() == i2_4.x1() && i2_3.x2() == i2_4.x2()))
-					return new Couple<Integer>(13, 2);
+					return 13;
 				
 				else
-					return new Couple<Integer>(5, 2);
+					return 5;
 			}
 		}
 		
-		return null;
+		return -1;
 	}
 	
 	public static String displayCycle(ArrayList<Integer> cycle) {
@@ -1093,270 +1100,29 @@ public class Approximation {
 		Collections.sort(list);
 		return list.toString();
 	}
-	
-	public static int findFirstVertex(SubMolecule subMolecule, int [] verticesOK) {
-		for (int i = 0 ; i < verticesOK.length ; i++) {
-			if (verticesOK[i] == 0 && subMolecule.getVertices()[i] == 1)
-				return i;
-		}
-		return -1;
-	}
-	
-	public static int computePerfectMatchings(UndirGraph molecule, SubMolecule subMolecule) {
-		
-		List<Integer> candidats = new ArrayList<Integer>();
-		
-		int [][] M = new int [subMolecule.getNbNodes() / 2][subMolecule.getNbNodes() / 2];
-		int [] verticesOK = new int [molecule.getNbNodes()];
-		int [] lines = new int [subMolecule.getNbNodes() /2];
-		int [] columns = new int [subMolecule.getNbNodes() / 2];
-		
-		int i1 = 0;
-		int i2 = 0;
-		
-		int nbVerticesOK = 0;
-		
-		while (nbVerticesOK < subMolecule.getNbNodes()) {
-			candidats.clear();
-			int firstVertex = findFirstVertex(subMolecule, verticesOK);
-			
-			if (firstVertex == -1)
-				break;
-			
-			if (i1 == i2) {
-				lines[i1] = firstVertex;
-				i1 ++;
-			}
-			
-			else if (i1 < i2) {
-				lines[i1] = firstVertex;
-				i1 ++;
-			}
-			
-			else if (i2 < i1) {
-				columns[i2] = firstVertex;
-				i2 ++;
-			}
-			
-			verticesOK[firstVertex] = 1;
-			nbVerticesOK ++;
-			
-			int state = 1;
-			int nbNeighbours = 1;
-			int sum = 1;
-			
-			candidats.add(firstVertex);
-			
-			while (candidats.size() > 0) {
-				
-				nbNeighbours = sum;
-				sum = 0;
-				
-				for (int n = 0 ; n < nbNeighbours ; n++) {
-					
-					int candidat = candidats.get(0);
-					
-					for (int u = 0 ; u < molecule.getNbNodes() ; u++) {
-						
-						if (subMolecule.getAdjacencyMatrix()[candidat][u] == 1 && verticesOK[u] == 0) {
-							
-							candidats.add(u);
-							verticesOK[u] = 1;
-							nbVerticesOK ++;
-							sum ++;
-							
-							if (state == 1) {
-								columns[i2] = u;
-								i2 ++;
-							}
-							
-							else {
-								lines[i1] = u;
-								i1 ++;
-							}
-						}
-					}
-					
-					candidats.remove(0);
-				}
-				
-				state = 1 - state;
-			}
-		}
-		
-		for (int i = 0 ; i < (subMolecule.getNbNodes() / 2) ; i++) {
-			for (int j = 0 ; j < (subMolecule.getNbNodes() / 2) ; j++) {
-				
-				int x = lines[i];
-				int y = columns[j];
-				
-				if (subMolecule.getAdjacencyMatrix()[x][y] == 1)
-					M[i][j] = 1;
-			}
-		}
-		
-		double [][] M2 = new double[M.length][M[0].length];
-		
-		for (int i = 0 ; i < M.length ; i++) {
-			for (int j = 0 ; j < M[i].length ; j++) {
-				M2[i][j] = (double)M[i][j];
-			}
-		}
-		
-		//@SuppressWarnings("unused")
-		//double test = MatrixOperations.matrixDeterminant(M2);
-		return Utils.computeMatrixDeterminant(M, M.length);
-	}
-	
-	public static void displayResults(int [] circuits) {
-		for (int i = 0 ; i < circuits.length ; i++) {
-			
-		}
-	}
-
-	public static void initSubstractTable(){
-		circuitsToSubstract = new int [62][2];
-		circuitsToSubstract[10][0] = 3;
-		circuitsToSubstract[10][1] = 13;
-
-		circuitsToSubstract[18][0] = 0;
-		circuitsToSubstract[18][1] = 3;
-
-		circuitsToSubstract[17][0] = 0;
-		circuitsToSubstract[17][1] = 3;
-
-		circuitsToSubstract[18][0] = 0;
-		circuitsToSubstract[18][1] = 3;
-
-		circuitsToSubstract[19][0] = 0;
-		circuitsToSubstract[19][1] = 3;
-
-		circuitsToSubstract[20][0] = 0;
-		circuitsToSubstract[20][1] = 1;
-
-		circuitsToSubstract[21][0] = 0;
-		circuitsToSubstract[21][1] = 1;
-
-		circuitsToSubstract[22][0] = 0;
-		circuitsToSubstract[22][1] = 1;
-
-		circuitsToSubstract[23][0] = 0;
-		circuitsToSubstract[23][1] = 1;
-
-		circuitsToSubstract[24][0] = 0;
-		circuitsToSubstract[24][1] = 1;
-
-		circuitsToSubstract[25][0] = 0;
-		circuitsToSubstract[25][1] = 1;
-
-		circuitsToSubstract[26][0] = 0;
-		circuitsToSubstract[26][1] = 1;
-
-		circuitsToSubstract[27][0] = 0;
-		circuitsToSubstract[27][1] = 1;
-
-		circuitsToSubstract[28][0] = 0;
-		circuitsToSubstract[28][1] = 2;
-
-		circuitsToSubstract[29][0] = 0;
-		circuitsToSubstract[29][1] = 2;
-
-		circuitsToSubstract[30][0] = 0;
-		circuitsToSubstract[30][1] = 1;
-
-		circuitsToSubstract[31][0] = 0;
-		circuitsToSubstract[31][1] = 1;
-
-		circuitsToSubstract[32][0] = 0;
-		circuitsToSubstract[32][1] = 1;
-
-		circuitsToSubstract[33][0] = 0;
-		circuitsToSubstract[33][1] = 1;
-
-		circuitsToSubstract[34][0] = 0;
-		circuitsToSubstract[34][1] = 2;
-
-		circuitsToSubstract[35][0] = 0;
-		circuitsToSubstract[35][1] = 2;
-
-		circuitsToSubstract[36][0] = 0;
-		circuitsToSubstract[36][1] = 1;
-
-		circuitsToSubstract[37][0] = 0;
-		circuitsToSubstract[37][1] = 1;
-
-		circuitsToSubstract[38][0] = 0;
-		circuitsToSubstract[38][1] = 1;
-
-		circuitsToSubstract[39][0] = 0;
-		circuitsToSubstract[39][1] = 1;
-
-		circuitsToSubstract[40][0] = 0;
-		circuitsToSubstract[40][1] = 1;
-
-		circuitsToSubstract[41][0] = 0;
-		circuitsToSubstract[41][1] = 1;
-
-		circuitsToSubstract[42][0] = 0;
-		circuitsToSubstract[42][1] = 2;
-
-		circuitsToSubstract[51][0] = 0;
-		circuitsToSubstract[51][1] = 2;
-
-		circuitsToSubstract[52][0] = 0;
-		circuitsToSubstract[52][1] = 1;
-
-		circuitsToSubstract[53][0] = 0;
-		circuitsToSubstract[53][1] = 1;
-
-		circuitsToSubstract[54][0] = 0;
-		circuitsToSubstract[54][1] = 1;
-
-		circuitsToSubstract[55][0] = 0;
-		circuitsToSubstract[55][1] = 1;
-
-		circuitsToSubstract[56][0] = 0;
-		circuitsToSubstract[56][1] = 2;
-
-		circuitsToSubstract[57][0] = 0;
-		circuitsToSubstract[57][1] = 1;
-
-		circuitsToSubstract[58][0] = 0;
-		circuitsToSubstract[58][1] = 2;
-
-		circuitsToSubstract[59][0] = 0;
-		circuitsToSubstract[59][1] = 2;
-
-		circuitsToSubstract[60][0] = 0;
-		circuitsToSubstract[60][1] = 1;
-
-		circuitsToSubstract[61][0] = 0;
-		circuitsToSubstract[61][1] = 1;
-	}
 
 	public static void computeEnergy(UndirGraph molecule) {
 		
 		int [] cyclesConfigurations = new int [] {2, 2, 2, 1, 2, 2, 1, 1, 1, 2, 1, 0, 0, 0, 0};
 		int [] circuits = new int [MAX_CYCLE_SIZE];
 		
-		initSubstractTable();
+		Utils.initSubstractTable();
 		
 		List<ArrayList<Integer>> cycles = computeCycles(molecule);
 		
 		for (ArrayList<Integer> cycle : cycles) {
 			
 			
-			Couple<Integer> cycleConfiguration = getCycleIndex(molecule, cycle);
+			int cycleConfiguration = getCycleIndex(molecule, cycle);
 			
 			//TODO: changer la condition
-			if (cycleConfiguration.getX() <= 10) {
+			if (cycleConfiguration <= 10) {
 				
 				SubMolecule subMolecule = substractCycle(molecule, cycle);
-				//int nbPerfectMatching = Math.abs(computePerfectMatchings(molecule, subMolecule));
 				int nbPerfectMatching = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
 				int size = ((cycle.size() / 2) - 2)/4;
 				
-				circuits[size - 1] += (nbPerfectMatching * cyclesConfigurations[cycleConfiguration.getX()]);
+				circuits[size - 1] += (nbPerfectMatching * cyclesConfigurations[cycleConfiguration]);
 			}
 		}
 
@@ -1399,24 +1165,5 @@ public class Approximation {
 
 		computeEnergy(molecule);
 
-		/*
-		List<ArrayList<Integer>> cycles = computeCycles(molecule);
-		System.out.println(cycles.size() + " cycles");
-		int i = 0;
-		for (ArrayList<Integer> cycle : cycles) {
-			
-			if (i == 54)
-				System.out.print("");
-			
-			SubMolecule subMolecule = substractCycle(molecule, cycle);
-			
-			System.out.println("[" + i + "]" + displayCycle(cycle) + " => " + getCycleIndex(molecule, cycle) 
-			                 + "\t\tDET=" + Math.abs(computePerfectMatchings(molecule, subMolecule)));
-
-			i++;
-		}
-		
-		displayTime();
-		*/
 	}
 }

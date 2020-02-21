@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import graphs.Node;
+import solver.Approximation;
 import solver.BenzenoidsSolver;
 
 public class Utils {
@@ -113,6 +114,127 @@ public class Utils {
 		return domain;
 	}
 	
+	public static void initSubstractTable(){
+		Approximation.circuitsToSubstract = new int [62][2];
+		
+		Approximation.circuitsToSubstract[10][0] = 3;
+		Approximation.circuitsToSubstract[10][1] = 13;
+
+		Approximation.circuitsToSubstract[18][0] = 0;
+		Approximation.circuitsToSubstract[18][1] = 3;
+
+		Approximation.circuitsToSubstract[17][0] = 0;
+		Approximation.circuitsToSubstract[17][1] = 3;
+
+		Approximation.circuitsToSubstract[18][0] = 0;
+		Approximation.circuitsToSubstract[18][1] = 3;
+
+		Approximation.circuitsToSubstract[19][0] = 0;
+		Approximation.circuitsToSubstract[19][1] = 3;
+
+		Approximation.circuitsToSubstract[20][0] = 0;
+		Approximation.circuitsToSubstract[20][1] = 1;
+
+		Approximation.circuitsToSubstract[21][0] = 0;
+		Approximation.circuitsToSubstract[21][1] = 1;
+
+		Approximation.circuitsToSubstract[22][0] = 0;
+		Approximation.circuitsToSubstract[22][1] = 1;
+
+		Approximation.circuitsToSubstract[23][0] = 0;
+		Approximation.circuitsToSubstract[23][1] = 1;
+
+		Approximation.circuitsToSubstract[24][0] = 0;
+		Approximation.circuitsToSubstract[24][1] = 1;
+
+		Approximation.circuitsToSubstract[25][0] = 0;
+		Approximation.circuitsToSubstract[25][1] = 1;
+
+		Approximation.circuitsToSubstract[26][0] = 0;
+		Approximation.circuitsToSubstract[26][1] = 1;
+
+		Approximation.circuitsToSubstract[27][0] = 0;
+		Approximation.circuitsToSubstract[27][1] = 1;
+
+		Approximation.circuitsToSubstract[28][0] = 0;
+		Approximation.circuitsToSubstract[28][1] = 2;
+
+		Approximation.circuitsToSubstract[29][0] = 0;
+		Approximation.circuitsToSubstract[29][1] = 2;
+
+		Approximation.circuitsToSubstract[30][0] = 0;
+		Approximation.circuitsToSubstract[30][1] = 1;
+
+		Approximation.circuitsToSubstract[31][0] = 0;
+		Approximation.circuitsToSubstract[31][1] = 1;
+
+		Approximation.circuitsToSubstract[32][0] = 0;
+		Approximation.circuitsToSubstract[32][1] = 1;
+
+		Approximation.circuitsToSubstract[33][0] = 0;
+		Approximation.circuitsToSubstract[33][1] = 1;
+
+		Approximation.circuitsToSubstract[34][0] = 0;
+		Approximation.circuitsToSubstract[34][1] = 2;
+
+		Approximation.circuitsToSubstract[35][0] = 0;
+		Approximation.circuitsToSubstract[35][1] = 2;
+
+		Approximation.circuitsToSubstract[36][0] = 0;
+		Approximation.circuitsToSubstract[36][1] = 1;
+
+		Approximation.circuitsToSubstract[37][0] = 0;
+		Approximation.circuitsToSubstract[37][1] = 1;
+
+		Approximation.circuitsToSubstract[38][0] = 0;
+		Approximation.circuitsToSubstract[38][1] = 1;
+
+		Approximation.circuitsToSubstract[39][0] = 0;
+		Approximation.circuitsToSubstract[39][1] = 1;
+
+		Approximation.circuitsToSubstract[40][0] = 0;
+		Approximation.circuitsToSubstract[40][1] = 1;
+
+		Approximation.circuitsToSubstract[41][0] = 0;
+		Approximation.circuitsToSubstract[41][1] = 1;
+
+		Approximation.circuitsToSubstract[42][0] = 0;
+		Approximation.circuitsToSubstract[42][1] = 2;
+
+		Approximation.circuitsToSubstract[51][0] = 0;
+		Approximation.circuitsToSubstract[51][1] = 2;
+
+		Approximation.circuitsToSubstract[52][0] = 0;
+		Approximation.circuitsToSubstract[52][1] = 1;
+
+		Approximation.circuitsToSubstract[53][0] = 0;
+		Approximation.circuitsToSubstract[53][1] = 1;
+
+		Approximation.circuitsToSubstract[54][0] = 0;
+		Approximation.circuitsToSubstract[54][1] = 1;
+
+		Approximation.circuitsToSubstract[55][0] = 0;
+		Approximation.circuitsToSubstract[55][1] = 1;
+
+		Approximation.circuitsToSubstract[56][0] = 0;
+		Approximation.circuitsToSubstract[56][1] = 2;
+
+		Approximation.circuitsToSubstract[57][0] = 0;
+		Approximation.circuitsToSubstract[57][1] = 1;
+
+		Approximation.circuitsToSubstract[58][0] = 0;
+		Approximation.circuitsToSubstract[58][1] = 2;
+
+		Approximation.circuitsToSubstract[59][0] = 0;
+		Approximation.circuitsToSubstract[59][1] = 2;
+
+		Approximation.circuitsToSubstract[60][0] = 0;
+		Approximation.circuitsToSubstract[60][1] = 1;
+
+		Approximation.circuitsToSubstract[61][0] = 0;
+		Approximation.circuitsToSubstract[61][1] = 1;
+	}
+	
 	public static void initTab() {
 		t[0] = 0;
 		t[1] = 1;
@@ -200,6 +322,8 @@ public class Utils {
        } 
    } 
      
+	
+	
    /* Recursive function for finding determinant 
    of matrix. n is current dimension of mat[][]. */
    public static int computeMatrixDeterminant(int mat[][], int n) { 
