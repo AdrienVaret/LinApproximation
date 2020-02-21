@@ -29,6 +29,12 @@ public class Approximation {
 	private static long computeCyclesTime;
 	public static int [][] circuitsToSubstract;
 
+	public static boolean isRedundantCycle(int index) {
+		if (index == 10 || index > 15)
+			return true;
+		return false;
+	}
+	
 	public static List<ArrayList<Integer>> computeRedundantCycles(UndirGraph molecule){
 
 		ArrayList<ArrayList<Integer>> cycles = new ArrayList<>();
