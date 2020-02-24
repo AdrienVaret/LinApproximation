@@ -2,7 +2,13 @@ package solver;
 
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.exception.SolverException;
 import org.chocosolver.solver.variables.*;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,6 +84,7 @@ public class Approximation {
 						secondVertices[index] = j;
 						index ++;
 
+					
 						Node u1 = molecule.getNodeRef(i);
 						Node u2 = molecule.getNodeRef(j);
 
@@ -86,32 +93,41 @@ public class Approximation {
 							model.edgeChanneling(g, boolStraightEdges[indexStraightEdges], i, j).post();
 							indexStraightEdges ++;
 						}
+					
 					}
 				}
 			}
 
 			model.cycle(g).post();
 			model.arithm(model.nbNodes(g), "=", size).post();
+			model.sum(boolEdges, "=", size);
 			model.sum(boolStraightEdges, ">=", 6).post();
 			model.sum(boolStraightEdges, "<=", 10).post();
 
 			model.getSolver().setSearch(new IntStrategy(boolEdges, new FirstFail(model), new IntDomainMin()));
 			Solver solver = model.getSolver();
 
-			while(solver.solve()){
-				Solution solution = new Solution(model);
-				solution.record();
+			Solution solution;
+			
+			try {
+				while(solver.solve()){
+					//Solution solution = new Solution(model);
+					solution = new Solution(model);
+					solution.record();
 
-				ArrayList<Integer> cycle = new ArrayList<Integer>();
+					ArrayList<Integer> cycle = new ArrayList<Integer>();
 
-				for (int i = 0 ; i < boolEdges.length ; i++) {
-					if (solution.getIntVal(boolEdges[i]) == 1) {
-						cycle.add(firstVertices[i]);
-						cycle.add(secondVertices[i]);
+					for (int i = 0 ; i < boolEdges.length ; i++) {
+						if (solution.getIntVal(boolEdges[i]) == 1) {
+							cycle.add(firstVertices[i]);
+							cycle.add(secondVertices[i]);
+						}
 					}
-				}
 
-				cycles.add(cycle);
+					cycles.add(cycle);
+				}
+			} catch (SolverException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -255,7 +271,7 @@ public class Approximation {
 				
 				if (sameLineNodes.size() == 1) {
 					intervals.add(new Interval(edges.getFirstVertices().get(i), edges.getSecondVertices().get(i), 
-								edges.getFirstVertices().get(sameLineNodes.get(0)), edges.getFirstVertices().get(sameLineNodes.get(0))));
+								edges.getFirstVertices().get(sameLineNodes.get(0)), edges.getSecondVertices().get(sameLineNodes.get(0))));
 				}
 				
 				else {
@@ -320,6 +336,52 @@ public class Approximation {
 		return false;
 	}
 	
+	public static SubMolecule substractCycleAndInterior(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
+		
+		int [][] newGraph = new int [molecule.getNbNodes()][molecule.getNbNodes()];
+		int [] vertices = new int [molecule.getNbNodes()];
+		int [] subGraphVertices = new int[molecule.getNbNodes()];
+		
+		List<Integer> hexagons = getHexagons(molecule, cycle, intervals);
+		
+		for (Integer hexagon : hexagons) {
+			int [] nodes = molecule.getHexagons()[hexagon];
+			
+			for (int i = 0 ; i < nodes.length ; i++)
+				vertices[nodes[i]] = 1;
+		}
+		
+		int subGraphNbNodes = 0;
+		
+		int nbEdges = 0;
+		
+		for (int u = 0 ; u < molecule.getNbNodes() ; u++) {
+			if (vertices[u] == 0) {
+				for (int v = (u+1) ; v < molecule.getNbNodes() ; v++) {
+					if (vertices[v] == 0) {
+						newGraph[u][v] = molecule.getAdjacencyMatrix()[u][v];
+						newGraph[v][u] = molecule.getAdjacencyMatrix()[v][u];
+						
+						if (molecule.getAdjacencyMatrix()[u][v] == 1)
+							nbEdges ++;
+						
+						if (subGraphVertices[u] == 0) {
+								subGraphVertices[u] = 1;
+								subGraphNbNodes ++;
+						}
+						
+						if (subGraphVertices[v] == 0) {
+								subGraphVertices[v] = 1;
+								subGraphNbNodes ++;
+						}
+					}
+				}
+			}
+		}
+		
+		return new SubMolecule(subGraphNbNodes, nbEdges, molecule.getNbNodes(), subGraphVertices, newGraph);
+	}
+	
 	public static SubMolecule substractCycle(UndirGraph molecule, ArrayList<Integer> cycle){
 		
 		int [][] newGraph = new int [molecule.getNbNodes()][molecule.getNbNodes()];
@@ -365,7 +427,7 @@ public class Approximation {
 		return (i1.y1() == i2.y1() && i1.y2() == i2.y2());
 	}
 
-	public static List<Integer> getHexagons(UndirGraph molecule, ArrayList<Interval> cycle, ArrayList<Interval> intervals){
+	public static List<Integer> getHexagons(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals){
 		List<Integer> hexagons = new ArrayList<Integer>();
 
 
@@ -374,7 +436,7 @@ public class Approximation {
 
 			int [] hexagonsCount = new int [molecule.getNbHexagons()];
 
-			for (int x = interval.x1() ; x <= interval.x2() ; x ++){
+			for (int x = interval.x1() ; x <= interval.x2() ; x += 2){
 				int u1 = molecule.getCoords().get(x, interval.y1());
 				int u2 = molecule.getCoords().get(x, interval.y2());
 
@@ -395,6 +457,34 @@ public class Approximation {
 		return hexagons;
 	}
 
+	public static int identifyCircuit(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
+		
+		int size = cycle.size() / 2;
+		
+		Interval i0 = null;
+		Interval i1 = null;
+		Interval i2 = null;
+		Interval i3 = null;
+		Interval i4 = null;
+		
+		for (int i = 0 ; i < intervals.size() ; i++) {
+			if (i == 0)
+				i0 = intervals.get(i);
+			if (i == 1)
+				i1 = intervals.get(i);
+			if (i == 2)
+				i2 = intervals.get(i);
+			if (i == 3)
+				i3 = intervals.get(i);
+			if (i == 4)
+				i4 = intervals.get(i);
+		}
+		
+		
+		
+		return -1;
+	}
+	
 	public static int identifyCircuitsUnion(UndirGraph molecule, ArrayList<Integer> cycle) {
 		
 		EdgeSet edges = computeStraightEdges(molecule, cycle);
@@ -1107,7 +1197,7 @@ public class Approximation {
 		return list.toString();
 	}
 
-	public static void computeEnergy(UndirGraph molecule) {
+	public static void computeEnergy(UndirGraph molecule) throws IOException {
 		
 		int [] cyclesConfigurations = new int [] {2, 2, 2, 1, 2, 2, 1, 1, 1, 2, 1, 0, 0, 0, 0};
 		int [] circuits = new int [MAX_CYCLE_SIZE];
@@ -1133,26 +1223,40 @@ public class Approximation {
 		}
 
 		List<ArrayList<Integer>> redundantCycles = computeRedundantCycles(molecule);
-
-		System.out.println("size = " + redundantCycles.size());
 		
-		int j = 0;
+		int index = 0;
+		
+		BufferedWriter w = new BufferedWriter(new FileWriter(new File("unknown_circuits")));
 		
 		for (ArrayList<Integer> cycle : redundantCycles){
-
-			if (j == 7)
+	
+			if (index == 59)
 				System.out.print("");
-			else 
-				j++;
+			
+			EdgeSet edges = computeStraightEdges(molecule, cycle);
+			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, edges);
+			Collections.sort(intervals);
 			
 			int configuration = identifyCircuitsUnion(molecule, cycle);
 			if (configuration != -1) {
 				int [] toSubstract = circuitsToSubstract[configuration];
-				circuits[2] -= toSubstract[0];
-				circuits[3] -= toSubstract[1];
+				
+				SubMolecule subMolecule = substractCycleAndInterior(molecule, cycle, intervals);
+				int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
+				
+				circuits[2] -= (toSubstract[0] * nbPerfectMatchings);
+				circuits[3] -= (toSubstract[1] * nbPerfectMatchings);
 			}
+			
+			else {
+				w.write(displayCycle(cycle) + "\n");
+			}
+			
+			index ++;
 		}
 
+		w.close();
+		
 		for (int i = 0 ; i < circuits.length ; i++){
 			System.out.print(circuits[i] + " ");
 		}
@@ -1163,7 +1267,7 @@ public class Approximation {
 		System.out.println("computeCycles() : " + computeCyclesTime + " ms.");
 	}
 	 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		String path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph_coord";
 		String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph";
 		

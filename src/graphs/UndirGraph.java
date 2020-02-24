@@ -138,6 +138,10 @@ public class UndirGraph {
 		return nbStraightEdges;
 	}
 
+	public int [][] getHexagons(){
+		return hexagons;
+	}
+	
 	/**
 	 * Class's methods
 	 */

@@ -26,4 +26,15 @@ public class EdgeSet {
 	public int size() {
 		return firstVertices.size();
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		
+		for (int i = 0 ; i < firstVertices.size() ; i++) {
+			b.append("(" + firstVertices.get(i).getIndex() + "--" + secondVertices.get(i).getIndex() + ") ");
+		}
+		
+		return b.toString();
+	}
 }
