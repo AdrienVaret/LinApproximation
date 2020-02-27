@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import graphs.Node;
+import graphs.UndirGraph;
 import solver.Approximation;
 import solver.BenzenoidsSolver;
 
@@ -354,6 +355,310 @@ public class Utils {
        } 
      
        return D; 
+   }
+   
+   public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3) {
+	   if (intervals.size() == 3) {
+		   if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3)
+			  return true;
+	   }
+	   return false;
+   }
+   
+   public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3, int s4) {
+	   if (intervals.size() == 4) {
+		   if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3 && 
+			   intervals.get(3).size() == s4)
+			   		return true;
+	   }
+	   return false;
+   }
+   
+   public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3, int s4, int s5) {
+	   if (intervals.size() == 5) {
+		   if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3 && 
+			   intervals.get(3).size() == s4 && intervals.get(4).size() == s5)
+			   		return true;
+	   }
+	   return false;
+   }
+   
+   public static int identifyCircuit(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
+	   
+
+		int size = cycle.size() / 2;
+		
+		
+		Interval i0 = null;
+		Interval i1 = null;
+		Interval i2 = null;
+		Interval i3 = null;
+		Interval i4 = null;
+		
+		int n = intervals.size();
+		
+		for (int i = 0 ; i < intervals.size() ; i++) {
+			if (i == 0)
+				i0 = intervals.get(i);
+			if (i == 1)
+				i1 = intervals.get(i);
+			if (i == 2)
+				i2 = intervals.get(i);
+			if (i == 3)
+				i3 = intervals.get(i);
+			if (i == 4)
+				i4 = intervals.get(i);
+		}
+	   
+		/*
+		 * I
+		 */
+		
+		if (checkSize(intervals, 4, 6, 4)) {
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1)
+				return 10;
+		}
+		
+		/*
+		 * II
+		 */
+		
+		if (checkSize(intervals, 4, 8, 4)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+					return 16;
+		}
+		
+		if (checkSize(intervals, 2, 4, 6, 4)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 2) ||
+				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1))
+					return 17;
+		}
+		
+		if (checkSize(intervals, 4, 6, 4, 2)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1) || 
+				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1))
+					return 18;
+		}
+		
+		if (checkSize(intervals, 4, 6, 6, 2)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x2() == i1.x2()) || 
+				(i0.x2() == i2.x2() && i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1))
+					return 19;
+		}
+		
+		if (checkSize(intervals, 4, 6, 4, 4)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i1.x2() - 1) ||
+				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i1.x1() + 1))
+					return 20;
+		}
+		
+		if (checkSize(intervals, 2, 8, 6)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+					return 21;
+		}
+		
+		if (checkSize(intervals, 6, 8, 4)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1))
+					return 22;
+		}
+		
+		if (checkSize(intervals, 2, 6, 6, 4)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1) || 
+				(i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1))
+					return 23;
+		}
+		
+		if (checkSize(intervals, 4, 4, 6, 2)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i3.x2() == i2.x2() - 1) || 
+				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i3.x1() == i2.x1() + 1))
+					return 24;
+		}
+		
+		/*
+		 * V
+		 */
+		
+		if (checkSize(intervals, 4, 10, 4)) {
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 3)
+				return 25;
+		}
+		
+		if (checkSize(intervals, 2, 4, 6, 4, 2)) {
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i3.x2() && i3.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 3)
+				return 26;
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i3.x1() == i2.x1() + 1 && i4.x1() == i3.x1() + 3)
+				return 27;
+		}
+		
+		if (checkSize(intervals, 4, 6, 4, 2, 2) && Approximation.intervalsOnSameLine(i3,  i4)) {
+		
+			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
+				return 28;
+		}
+		
+		if (checkSize(intervals, 2, 2, 4, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
+			
+			if (i0.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i0.x1() + 1 && i1.x2() == i3.x2())
+				return 29;
+		}
+		
+		/*
+		 * VII
+		 */
+		
+		if (checkSize(intervals, 4, 10, 6)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 3) || 
+				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 3))
+					return 30;
+			
+		}
+		
+		if (checkSize(intervals, 6, 10, 4)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 3) ||
+				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 3))
+					return 31;
+		}
+		
+		if (checkSize(intervals, 2, 4, 6, 4, 4)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1) || 
+				(i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 1))
+					return 32;
+		}
+		
+		if (checkSize(intervals, 2, 4, 6, 6, 2)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1 && i1.x1() == i3.x1() && i4.x2() == i2.x2()) ||
+				(i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x1() == i2.x1()))
+					return 33;
+		}
+		
+		if (checkSize(intervals, 2, 6, 6, 4, 2)) {
+			
+			if ((i1.x1() == i3.x1() && i2.x1() == i4.x1() && i1.x1() == i2.x1() + 1 && i0.x1() == i1.x1() + 3) || 
+				(i1.x2() == i3.x2() && i2.x2() == i4.x2() && i1.x2() == i2.x2() - 1 && i0.x2() == i1.x2() - 3))
+				return 34;
+		}
+		
+		if (checkSize(intervals, 4, 4, 6, 4, 2)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x1() == i2.x1()) || 
+				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i2.x1() + 1 && i4.x2() == i2.x2()))
+					return 35;
+		}
+		
+		if (checkSize(intervals, 2, 2, 6, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
+			
+			if ((i0.x1() == i3.x1() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1 && i1.x2() == i3.x2()) ||
+				(i0.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i0.x1() + 1 && i1.x2() == i3.x2()))
+					return 36;
+				
+		}
+		
+		if (checkSize(intervals, 4, 6, 6, 2, 2) && Approximation.intervalsOnSameLine(i3,  i4)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i4.x2() && i2.x2() == i4.x2() - 1 && i3.x1() == i1.x1()) ||
+				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2()))
+				return 37;
+		}
+		
+		if (checkSize(intervals, 2, 4, 8, 6)) {
+			if ((i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 3) ||
+				(i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 3))
+				return 38;
+		}
+		
+		if (checkSize(intervals, 6, 8, 4, 2)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 3) ||
+				(i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 3))
+					return 39;
+		}
+		
+		if (checkSize(intervals, 4, 8, 4, 4)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x1() - 1))
+					return 40;
+		}
+		
+		if (checkSize(intervals, 4, 4, 8, 4)) {
+			
+			if ((i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i3.x1() - 1) ||
+			    (i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i3.x2() == i2.x2() - 1))
+			    	return 41;
+		}
+		
+		/*
+		 * X
+		 */
+		
+		if (checkSize(intervals, 6, 10, 6)) {
+			
+			if ((i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() - 3) ||
+				(i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() + 3))
+					return 42;
+		}
+		
+		if (checkSize(intervals, 4, 4, 6, 4, 4)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x2() == i3.x2() - 1) ||
+				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1))
+					return 43;
+		}
+		
+		if (checkSize(intervals, 2, 6, 6, 6, 2)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 3) ||
+				(i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1 && i4.x1() == i3.x1() + 3))
+					return 44;
+		}
+		
+		if (checkSize(intervals, 2, 2, 8, 6, 4) && Approximation.intervalsOnSameLine(i0,  i1)) {
+			
+			if (i0.x1() == i3.x1() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1 && i1.x2() == i3.x2())
+				return 45;
+		}
+		
+		if (checkSize(intervals, 4, 6, 8, 2, 2) && Approximation.intervalsOnSameLine(i3, i4)) {
+			
+			if (i1.x1() == i3.x1() && i2.x1() == i3.x1() - 1 && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
+				return 46;
+		}
+		
+		if (checkSize(intervals, 6, 8, 4, 4)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1))
+					return 47;
+		}
+		
+		if (checkSize(intervals, 4, 4, 8, 6)) {
+			
+			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1) ||
+				(i0.x2() == i1.x2() - 1 && i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1))
+					return 48;
+		}
+		
+	    return -1;
    }
 }
 

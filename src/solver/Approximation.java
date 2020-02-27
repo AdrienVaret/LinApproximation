@@ -2,6 +2,7 @@ package solver;
 
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.nary.cnf.LogOp;
 import org.chocosolver.solver.exception.SolverException;
 import org.chocosolver.solver.variables.*;
 
@@ -82,28 +83,33 @@ public class Approximation {
 						model.edgeChanneling(g, boolEdges[index], i, j).post();
 						firstVertices[index] = i;
 						secondVertices[index] = j;
-						index ++;
+						
 
 					
 						Node u1 = molecule.getNodeRef(i);
 						Node u2 = molecule.getNodeRef(j);
 
 						if (u1.getX() == u2.getX()) {
-							boolStraightEdges[indexStraightEdges] = model.boolVar("(" + i + "--" + j + ")");
+							//boolStraightEdges[indexStraightEdges] = model.boolVar("(" + i + "--" + j + ")");
+							boolStraightEdges[indexStraightEdges] = boolEdges[index];
 							model.edgeChanneling(g, boolStraightEdges[indexStraightEdges], i, j).post();
 							indexStraightEdges ++;
 						}
 					
+						index ++;
+						
 					}
 				}
 			}
 
+			
 			model.cycle(g).post();
 			model.arithm(model.nbNodes(g), "=", size).post();
-			model.sum(boolEdges, "=", size);
+			//model.sum(boolEdges, "=", size);
+			model.sum(boolEdges, ">", 0);
 			model.sum(boolStraightEdges, ">=", 6).post();
 			model.sum(boolStraightEdges, "<=", 10).post();
-
+			
 			model.getSolver().setSearch(new IntStrategy(boolEdges, new FirstFail(model), new IntDomainMin()));
 			Solver solver = model.getSolver();
 
