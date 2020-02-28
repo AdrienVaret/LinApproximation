@@ -116,22 +116,22 @@ public class Utils {
 	}
 	
 	public static void initSubstractTable(){
-		Approximation.circuitsToSubstract = new int [62][2];
-		
-		Approximation.circuitsToSubstract[10][0] = 3;
-		Approximation.circuitsToSubstract[10][1] = 13;
+		Approximation.circuitsToSubstract = new int [49][2];
 
-		Approximation.circuitsToSubstract[18][0] = 0;
-		Approximation.circuitsToSubstract[18][1] = 3;
+		Approximation.circuitsToSubstract[12][0] = 3;
+		Approximation.circuitsToSubstract[12][1] = 13;
+
+		Approximation.circuitsToSubstract[16][0] = 0;
+		Approximation.circuitsToSubstract[16][1] = 2;
 
 		Approximation.circuitsToSubstract[17][0] = 0;
-		Approximation.circuitsToSubstract[17][1] = 3;
+		Approximation.circuitsToSubstract[17][1] = 2;
 
 		Approximation.circuitsToSubstract[18][0] = 0;
-		Approximation.circuitsToSubstract[18][1] = 3;
+		Approximation.circuitsToSubstract[18][1] = 2;
 
 		Approximation.circuitsToSubstract[19][0] = 0;
-		Approximation.circuitsToSubstract[19][1] = 3;
+		Approximation.circuitsToSubstract[19][1] = 1;
 
 		Approximation.circuitsToSubstract[20][0] = 0;
 		Approximation.circuitsToSubstract[20][1] = 1;
@@ -149,19 +149,19 @@ public class Utils {
 		Approximation.circuitsToSubstract[24][1] = 1;
 
 		Approximation.circuitsToSubstract[25][0] = 0;
-		Approximation.circuitsToSubstract[25][1] = 1;
+		Approximation.circuitsToSubstract[25][1] = 2;
 
 		Approximation.circuitsToSubstract[26][0] = 0;
-		Approximation.circuitsToSubstract[26][1] = 1;
+		Approximation.circuitsToSubstract[26][1] = 2;
 
 		Approximation.circuitsToSubstract[27][0] = 0;
-		Approximation.circuitsToSubstract[27][1] = 1;
+		Approximation.circuitsToSubstract[27][1] = 2;
 
 		Approximation.circuitsToSubstract[28][0] = 0;
-		Approximation.circuitsToSubstract[28][1] = 2;
+		Approximation.circuitsToSubstract[28][1] = 1;
 
 		Approximation.circuitsToSubstract[29][0] = 0;
-		Approximation.circuitsToSubstract[29][1] = 2;
+		Approximation.circuitsToSubstract[29][1] = 1;
 
 		Approximation.circuitsToSubstract[30][0] = 0;
 		Approximation.circuitsToSubstract[30][1] = 1;
@@ -176,10 +176,10 @@ public class Utils {
 		Approximation.circuitsToSubstract[33][1] = 1;
 
 		Approximation.circuitsToSubstract[34][0] = 0;
-		Approximation.circuitsToSubstract[34][1] = 2;
+		Approximation.circuitsToSubstract[34][1] = 1;
 
 		Approximation.circuitsToSubstract[35][0] = 0;
-		Approximation.circuitsToSubstract[35][1] = 2;
+		Approximation.circuitsToSubstract[35][1] = 1;
 
 		Approximation.circuitsToSubstract[36][0] = 0;
 		Approximation.circuitsToSubstract[36][1] = 1;
@@ -200,40 +200,27 @@ public class Utils {
 		Approximation.circuitsToSubstract[41][1] = 1;
 
 		Approximation.circuitsToSubstract[42][0] = 0;
-		Approximation.circuitsToSubstract[42][1] = 2;
+		Approximation.circuitsToSubstract[42][1] = 1;
 
-		Approximation.circuitsToSubstract[51][0] = 0;
-		Approximation.circuitsToSubstract[51][1] = 2;
+		Approximation.circuitsToSubstract[43][0] = 0;
+		Approximation.circuitsToSubstract[43][1] = 1;
 
-		Approximation.circuitsToSubstract[52][0] = 0;
-		Approximation.circuitsToSubstract[52][1] = 1;
+		Approximation.circuitsToSubstract[44][0] = 0;
+		Approximation.circuitsToSubstract[44][1] = 1;
 
-		Approximation.circuitsToSubstract[53][0] = 0;
-		Approximation.circuitsToSubstract[53][1] = 1;
+		Approximation.circuitsToSubstract[45][0] = 0;
+		Approximation.circuitsToSubstract[45][1] = 1;
 
-		Approximation.circuitsToSubstract[54][0] = 0;
-		Approximation.circuitsToSubstract[54][1] = 1;
+		Approximation.circuitsToSubstract[46][0] = 0;
+		Approximation.circuitsToSubstract[46][1] = 1;
 
-		Approximation.circuitsToSubstract[55][0] = 0;
-		Approximation.circuitsToSubstract[55][1] = 1;
+		Approximation.circuitsToSubstract[47][0] = 0;
+		Approximation.circuitsToSubstract[47][1] = 1;
 
-		Approximation.circuitsToSubstract[56][0] = 0;
-		Approximation.circuitsToSubstract[56][1] = 2;
+		Approximation.circuitsToSubstract[48][0] = 0;
+		Approximation.circuitsToSubstract[48][1] = 1;
 
-		Approximation.circuitsToSubstract[57][0] = 0;
-		Approximation.circuitsToSubstract[57][1] = 1;
 
-		Approximation.circuitsToSubstract[58][0] = 0;
-		Approximation.circuitsToSubstract[58][1] = 2;
-
-		Approximation.circuitsToSubstract[59][0] = 0;
-		Approximation.circuitsToSubstract[59][1] = 2;
-
-		Approximation.circuitsToSubstract[60][0] = 0;
-		Approximation.circuitsToSubstract[60][1] = 1;
-
-		Approximation.circuitsToSubstract[61][0] = 0;
-		Approximation.circuitsToSubstract[61][1] = 1;
 	}
 	
 	public static void initTab() {
@@ -357,6 +344,14 @@ public class Utils {
        return D; 
    }
    
+   public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2) {
+	   if (intervals.size() == 2) {
+		   if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2)
+			  return true;
+	   }
+	   return false;
+   }
+   
    public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3) {
 	   if (intervals.size() == 3) {
 		   if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3)
@@ -417,7 +412,7 @@ public class Utils {
 		if (checkSize(intervals, 4, 6, 4)) {
 			
 			if (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1)
-				return 10;
+				return 12;
 		}
 		
 		/*
@@ -659,6 +654,286 @@ public class Utils {
 		}
 		
 	    return -1;
+   }
+   
+   public static int identifyMinimalCycle(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
+	   
+	   int size = cycle.size() / 2;
+		
+		
+		Interval i0 = null;
+		Interval i1 = null;
+		Interval i2 = null;
+		Interval i3 = null;
+		Interval i4 = null;
+		
+		int n = intervals.size();
+		
+		for (int i = 0 ; i < intervals.size() ; i++) {
+			if (i == 0)
+				i0 = intervals.get(i);
+			if (i == 1)
+				i1 = intervals.get(i);
+			if (i == 2)
+				i2 = intervals.get(i);
+			if (i == 3)
+				i3 = intervals.get(i);
+			if (i == 4)
+				i4 = intervals.get(i);
+		}
+		
+		/*
+		 * 0
+		 */
+		
+		if (intervals.size() == 1 && i0.size() == 2)
+			return 0;
+		
+		/*
+		 * 1
+		 */
+		
+		if (intervals.size() == 1 && i0.size() == 4)
+			return 1;
+		
+		if (checkSize(intervals, 2, 2)) {
+			
+			if (i0.x1() == i1.x1() - 1 || i0.x1() == i1.x1() + 1)
+				return 1;
+		}
+		
+		/*
+		 * 2
+		 */
+		
+		if (intervals.size() == 1 && i0.size() == 6)
+			return 2;
+		
+		if (checkSize(intervals, 2, 2, 2)) {
+			
+			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1) || 
+				(i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1))
+					return 2;
+			
+			
+		}
+	   
+		/*
+		 * 3
+		 */
+		
+		if (checkSize(intervals, 4, 2)) {
+			
+			if (i0.x2() == i1.x2() - 1 || i0.x1() == i1.x1() + 1)
+				return 3;
+		}
+		
+		if (checkSize(intervals, 2, 4)) {
+			
+			if (i0.x2() == i1.x2() + 1 || i0.x1() == i1.x1() - 1)
+				return 3;
+		}
+		
+		if (checkSize(intervals, 2, 2, 2)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+					return 3;
+			
+		}
+		
+		/*
+		 * 4
+		 */
+		
+		if (checkSize(intervals, 4, 4)) {
+			
+			if (i0.x1() == i1.x1() + 1 || i0.x2() == i1.x2() - 1)
+				return 4;
+		}
+		
+		if (checkSize(intervals, 2, 4, 2)) {
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1)
+				return 4;
+		}
+		
+		/*
+		 * 5
+		 */
+		
+		if (intervals.size() == 1 && i0.size() == 8)
+			return 5;
+		
+		if (checkSize(intervals, 2, 2, 2, 2)) {
+			
+			if (i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1 && i2.x1() == i3.x1() - 1)
+				return 5;
+			
+			if (i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1 && i2.x2() == i3.x2() + 1)
+				return 5;
+		}
+		
+		/*
+		 * 6
+		 */
+		
+		if (checkSize(intervals, 2, 6)) {
+			
+			if (i0.x2() == i1.x2() + 1 || i0.x1() == i1.x1() - 1)
+				return 6;
+		}
+		
+		if (checkSize(intervals, 6, 2)) {
+			
+			if (i0.x2() == i1.x2() - 1 || i0.x1() == i1.x1() + 1)
+				return 6;
+		}
+		
+		if (checkSize(intervals, 4, 2, 2)) {
+			
+			if ((i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1) || 
+				(i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1))
+					return 6;
+		}
+		
+		if (checkSize(intervals, 2, 2, 4)) {
+			
+			if ((i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1) || 
+				(i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1))
+					return 6;
+		}
+		
+		/*
+		 * 7
+		 */
+		
+		if (checkSize(intervals, 2, 4, 2)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1))
+					return 7;
+		}
+		
+		/*
+		 * 8
+		 */
+		
+		if (checkSize(intervals, 4, 4, 2)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() - 1) ||
+				(i0.x1() == i2.x1() && i1.x1() == i2.x1() + 1))
+					return 8;
+		}
+		
+		if (checkSize(intervals, 2, 4, 4)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() + 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i2.x2() - 1))
+					return 8;
+		}
+		
+		if (checkSize(intervals, 2, 6, 2)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+					return 8;
+		}
+		
+		/*
+		 * 9
+		 */
+		
+		if (checkSize(intervals, 4, 6)) {
+			
+			if (i0.x2() == i1.x2() + 1 || i0.x1() == i1.x1() - 1)
+				return 9;
+		}
+		
+		if (checkSize(intervals, 6, 4)) {
+			
+			if (i0.x2() == i1.x2() - 1 || i0.x1() == i1.x1() + 1)
+				return 9;
+		}
+		
+		if (checkSize(intervals, 2, 2, 4, 2)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1) ||
+				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1))
+					return 9;
+		}
+		
+		if (checkSize(intervals, 2, 4, 2, 2)) {
+			
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i3.x2() - 1) ||
+				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i3.x1() + 1))
+					return 9;
+		}
+		
+		if (checkSize(intervals, 2, 4, 4)) {
+			
+			if ((i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1) ||
+				(i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1))
+					return 9;
+		}
+		
+		if (checkSize(intervals, 4, 4, 2)) {
+			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1) ||
+				(i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1))
+					return 9;
+		}
+		
+		/*
+		 * 10
+		 */
+		
+		if (checkSize(intervals, 4, 4 ,4)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1))
+					return 10;
+		}
+		
+		if (checkSize(intervals, 2, 6, 4)) {
+			
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+					return 10;
+				
+		}
+		
+		if (checkSize(intervals, 4, 6, 2)) {
+			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1) ||
+				(i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1))
+					return 10;
+		}
+	   
+	   
+	   /*
+	    * 15
+	    */
+	   
+	   if (checkSize(intervals, 6, 6)) {
+		   
+		   if (i0.x1() == i1.x1() - 1 || i0.x1() == i1.x1() + 1)
+			   return 15;
+	   }
+	   
+	   if (checkSize(intervals, 4, 4, 4)) {
+		   
+		   if ((i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1) ||
+			   (i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1))
+			   		return 15;
+	   }
+	   
+	   if (checkSize(intervals, 2, 4, 4, 2)) {
+		   if ((i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() + 1) ||
+			   (i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() - 1))
+			   		return 15;
+	   }
+	   
+	   
+	   return -1;
    }
 }
 

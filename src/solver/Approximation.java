@@ -491,510 +491,9 @@ public class Approximation {
 		return -1;
 	}
 	
-	public static int identifyCircuitsUnion(UndirGraph molecule, ArrayList<Integer> cycle) {
-		
-		EdgeSet edges = computeStraightEdges(molecule, cycle);
-		List<Interval> intervals = computeIntervals(molecule, cycle, edges);
-		Collections.sort(intervals);
-
-		int size = cycle.size() / 2;
-		
-		
-		Interval i0 = null;
-		Interval i1 = null;
-		Interval i2 = null;
-		Interval i3 = null;
-		Interval i4 = null;
-		
-		for (int i = 0 ; i < intervals.size() ; i++) {
-			if (i == 0)
-				i0 = intervals.get(i);
-			if (i == 1)
-				i1 = intervals.get(i);
-			if (i == 2)
-				i2 = intervals.get(i);
-			if (i == 3)
-				i3 = intervals.get(i);
-			if (i == 4)
-				i4 = intervals.get(i);
-		}
-		
-		if (intervals.size() == 3 && size == 18 && 
-			intervals.get(0).size() == 4 && 
-			intervals.get(1).size() == 6 && 
-			intervals.get(2).size() == 4 &&
-			i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1) {
-			
-			return 10;
-		}
-		
-		else if (intervals.size() == 3 && size == 22 && 
-			intervals.get(0).size() == 4 && 
-			intervals.get(1).size() == 8 && 
-			intervals.get(2).size() == 4) {
-				
-			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 3) ||
-				(i0.x1() == i2.x1() && i1.x1() == i2.x2() - 3))
-					return 18;
-		}
-		
-		else if (intervals.size() == 4 && size == 22 && 
-			intervals.get(0).size() == 4 && 
-			intervals.get(1).size() == 6 && 
-			intervals.get(2).size() == 4 &&
-			intervals.get(3).size() == 2 ) {
-					
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i1.x2()) ||
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i2.x1() - 1))
-					return 17;
-		}
-		
-		else if (intervals.size() == 4 && size == 22 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 4 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 4 ) {
-					
-				if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1 && i3.x1() == i2.x1() + 1) ||
-					(i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1 && i3.x2() == i1.x2()))
-						return 19;
-		}
-		
-		else if (intervals.size() == 4 && size == 22 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 6 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 4 ) {
-						
-			
-				if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i1.x2()) ||
-					(i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i1.x1()))
-						return 20;
-		}
-		
-		else if (intervals.size() == 3 && size == 22 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 8 && 
-				intervals.get(2).size() == 6 ) {
-						
-				if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1) ||
-					(i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1))
-						return 22;
-		}
-		
-		else if (intervals.size() == 3 && size == 22 && 
-				intervals.get(0).size() == 6 && 
-				intervals.get(1).size() == 8 && 
-				intervals.get(2).size() == 4 ) {
-						
-			
-				if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1) ||
-					(i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1)) 
-						return 21;
-		}
 	
-		else if (intervals.size() == 4 && size == 22 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 4 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 4 ) {
-						
-				if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() - 1 && i3.x2() == i1.x2()) ||
-					(i0.x1() == i2.x1() && i1.x1() == i2.x1() + 1 && i3.x1() == i1.x1()))
-						return 23;
-		}
-		
-		else if (intervals.size() == 4 && size == 22 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 6 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 2 ) {
-					
-				if ((i1.x2() == i3.x2() && i2.x2() == i3.x2() + 1 && i0.x2() == i1.x2() - 1) ||
-					(i1.x1() == i3.x1() && i2.x1() == i3.x1() - 1 && i0.x1() == i1.x1() + 1))
-						return 24;
-		}
-		
-		else if (intervals.size() == 4 && size == 22 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 6 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 4 ) {
-						
-			
-				if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1) || 
-					(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1))
-						return 25;
-		}
-		
-		// TODO: check if correct
-		else if (intervals.size() == 3 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 10 && 
-				intervals.get(2).size() == 4 ) {
-		
-				//Disambiguation
-			
-				int distance1 = Math.abs(intervals.get(0).x1() - intervals.get(1).x1());
-				int distance2 = Math.abs(intervals.get(0).x2() - intervals.get(1).x2());
-				
-				if ((distance1 == 5 && distance2 == 1) || (distance1 == 1 && distance2 == 5))
-					return 26;
-				
-				else if (distance1 == 3 && distance2 == 3)
-					return 29;
-		}
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 6 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 2 &&
-				intervals.get(4).size() == 2) {
-						
-				if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i3.x2() - 1 && i4.x2() == i3.x2() + 1) || 
-					(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i3.x1() + 1 && i4.x1() == i3.x1() - 1))
-						return 27;
-		}
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 2 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 6 &&
-				intervals.get(4).size() == 4) {
-				
-				if ((i1.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i1.x1() + 1 && i0.x1() == i1.x1() - 1) || 
-					(i1.x2() == i3.x2() && i2.x2() == i4.x2() && i2.x2() == i1.x2() - 1 && i0.x2() == i1.x2() + 1))
-						return 50;
-		}
-		
-		//TODO: check if correct
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 4 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 4 &&
-				intervals.get(4).size() == 2) {
-						
-				if (Math.abs(i0.x1() - i4.x2()) == 6 || Math.abs(i0.x2() - i4.x2()) == 6)
-					return 28;
-				
-				else if (i0.x1() == i4.x1() && i0.x2() == i4.x2())
-					return 53;
-		}
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 6 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 2 &&
-				intervals.get(4).size() == 2 &&
-				intervalsOnSameLine(intervals.get(3), intervals.get(4))) {
-						
-				if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
-					return 30;
-		}
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 2 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 6 &&
-				intervals.get(4).size() == 4 &&
-				intervalsOnSameLine(intervals.get(0), intervals.get(1))) {
-						
-				if (i0.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i0.x1() + 1 && i1.x2() == i3.x2())
-					return 31;
-		}
-		
-		else if (intervals.size() == 4 && size == 26 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 4 && 
-				intervals.get(2).size() == 8 &&
-				intervals.get(3).size() == 4 ) {
-				
-				if ((i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 3) || 
-					(i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 3))
-						return 32;
-
-				if (Math.abs(i0.x1() - i3.x2()) == 8 || Math.abs(i0.x2() - i3.x1()) == 8)
-					return 52;
-					
-		}
-		
-		else if (intervals.size() == 4 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 8 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 2 ) {
-			
-				if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 3) ||
-					(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 3))
-						return 33;
-			
-				if (Math.abs(i0.x1() - i3.x2()) == 8 || Math.abs(i0.x2() - i3.x1()) == 8)
-					return 54;
-					
-		}
-		
-		
-		// Coronène + 3
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 4 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 6 &&
-				intervals.get(4).size() == 2) {
-						
-				if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x1() == i4.x1() && i2.x1() == i3.x1() + 1) || 
-					(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x2() == i4.x2() && i2.x2() == i3.x2() - 1))
-						return 34;
-
-				if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i4.x2() == i3.x2() - 1 && i2.x2() == i1.x2() + 1) ||
-					(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1))
-						return 55;
-		}
-		
-		if (intervals.size() == 5 && size == 26 && 
-				i0.size() == 2 && i1.size() == 6 && i2.size() == 6 && i3.size() == 4 && i4.size() == 2) {
-			
-			if ((i0.x2() == i2.x2() && i3.x2() == i2.x2() - 1 && i1.x1() == i3.x1() && i2.x1() == i4.x1()) ||
-				(i0.x1() == i2.x1() && i3.x1() == i2.x1() + 1 && i1.x2() == i3.x2() && i2.x2() == i4.x2()))
-					return 35;
-
-			 if ((i1.x1() == i3.x1() && i2.x1() == i4.x1() && i3.x1() == i2.x1() + 1 && i0.x1() == i1.x1() + 1) ||
-				 (i1.x2() == i3.x2() && i2.x2() == i4.x2() && i3.x2() == i2.x2() - 1 && i0.x2() == i1.x2() - 1))
-			 		return 57;
-		}
-		
-		else if (intervals.size() == 4 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 8 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 2) {
-						
-			
-				if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i3.x2()) ||
-				    (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i3.x1() + 1))
-						return 54;			
-		}
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 2 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 6 &&
-				intervals.get(4).size() == 4 &&
-				intervalsOnSameLine(intervals.get(0), intervals.get(1))) {
-					
-				if ((i0.x1() == i3.x1() && i1.x2() == i3.x2() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1) || 
-					(i0.x1() == i3.x1() && i1.x2() == i3.x2() && i2.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1))
-						return 36;			
-		}
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 6 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 2 &&
-				intervals.get(4).size() == 2 &&
-				intervalsOnSameLine(intervals.get(3), intervals.get(4))) {
-					
-				if ((i0.x2() == i2.x2() && i1.x1() == i2.x1() + 1 && i1.x1() == i3.x1() && i1.x2() == i4.x2()) || 
-					(i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i1.x1() == i3.x1() && i1.x2() == i4.x2()))
-						return 37;			
-		}
-		
-		else if (intervals.size() == 4 && size == 26 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 4 && 
-				intervals.get(2).size() == 8 &&
-				intervals.get(3).size() == 6) {
-						
-				
-				if ((i1.x2() == i3.x2() && i0.x1() == i1.x1() - 1 && i2.x1() == i3.x1() - 1) || 
-					(i1.x1() == i3.x1() && i0.x2() == i1.x2() + 1 && i2.x2() == i3.x2() + 1))
-						return 38;			
-		}
-		
-		else if (intervals.size() == 4 && size == 26 && 
-				intervals.get(0).size() == 6 && 
-				intervals.get(1).size() == 8 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 2) {
-
-				if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 3) ||
-					(i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 3))
-						return 40;
-		}
-		
-		else if (intervals.size() == 4 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 8 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 4) {
-
-				if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1) ||
-					(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1))
-						return 41;
-		}
-		
-		else if (intervals.size() == 4 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 4 && 
-				intervals.get(2).size() == 8 &&
-				intervals.get(3).size() == 4) {
-					
-				if ((i0.x2() == i1.x2() - 1 && i1.x2() == i3.x2() && i2.x2() == i3.x2() + 1) || 
-					(i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i3.x1() - 1))
-						return 39;			
-		}
-		
-		//Coronene + 4
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 6 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 6 &&
-				intervals.get(4).size() == 2) {
-
-				if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1 && i4.x2() == i2.x2() - 4) ||
-					(i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1 && i4.x1() == i2.x1() + 4))
-						return 43;
-		}
-		
-		else if (intervals.size() == 3 && size == 26 &&
-				intervals.get(0).size() == 6 &&
-				intervals.get(1).size() == 10 &&
-				intervals.get(2).size() == 6) {
-
-					if ((i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() - 3) ||
-						(i0.x1() == i1.x1() + 1 && i2.x2() == i1.x1() + 3))
-							return 44;
-		}
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 4 && 
-				intervals.get(2).size() == 6 &&
-				intervals.get(3).size() == 4 &&
-				intervals.get(4).size() == 4) {
-
-				if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1 && i1.x2() == i3.x2() && i4.x2() == i3.x2() - 1) ||
-					(i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1 && i1.x1() == i3.x1() && i4.x1() == i3.x1() + 1))
-						return 45;
-		}
-			
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 2 && 
-				intervals.get(1).size() == 2 && 
-				intervals.get(2).size() == 8 &&
-				intervals.get(3).size() == 6 &&
-				intervals.get(4).size() == 4 &&
-				intervalsOnSameLine(intervals.get(0), intervals.get(1))) {
-
-				if (i0.x1() == i3.x1() && i2.x1() == i3.x1() - 1 && i4.x1() == i3.x1() + 1 &&
-					i1.x2() == i3.x2() && i2.x2() == i3.x2() + 1 && i4.x2() == i3.x2() - 1)
-						return 46;
-		}
-		
-		else if (intervals.size() == 5 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 6 && 
-				intervals.get(2).size() == 8 &&
-				intervals.get(3).size() == 2 &&
-				intervals.get(4).size() == 2 &&
-				intervalsOnSameLine(intervals.get(3), intervals.get(4))) {
-
-				if (i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() - 1 &&
-					i2.x2() == i4.x2() && i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() + 1)
-						return 47;
-		}
-		
-		else if (intervals.size() == 4 && size == 26 && 
-				intervals.get(0).size() == 4 && 
-				intervals.get(1).size() == 4 && 
-				intervals.get(2).size() == 8 &&
-				intervals.get(3).size() == 6) {
-
-				if ((i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i3.x1() - 1) ||
-					(i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() + 1))
-						return 48;
-		}
-		
-		else if (intervals.size() == 4 && size == 26 && 
-				intervals.get(0).size() == 6 && 
-				intervals.get(1).size() == 8 && 
-				intervals.get(2).size() == 4 &&
-				intervals.get(3).size() == 4) {
-
-				if ((i0.x1() == i2.x1() && i3.x1() == i2.x1() + 1 && i1.x1() == i2.x1() - 1) ||
-					(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1))
-						return 49;
-		}
-
-		else if (intervals.size() == 5 && size == 26 &&
-		         i0.size() == 2 &&
-				 i1.size() == 4 &&
-				 i2.size() == 6 &&
-				 i3.size() == 4 &&
-				 i4.size() == 4) {
-
-				if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 1) ||
-					(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1))
-						return 56;
-		}
-
-		if (intervals.size() == 5 && size == 26 &&
-		    i0.size() == 4 &&
-			i1.size() == 4 &&
-			i2.size() == 6 &&
-			i3.size() == 4 &&
-			i4.size() == 2) {
-
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i3.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 3) ||
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i3.x1() == i2.x1() + 1 && i4.x1() == i3.x1() + 3))
-					return 58;
-		}
-
-		if (intervals.size() == 3 && size == 26 &&
-		    i0.size() == 4 &&
-			i1.size() == 10 &&
-			i2.size() == 6){
-
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 3) ||
-				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 3))
-					return 59;
-		}
-
-		if (intervals.size() == 3 && size == 26 &&
-		    i0.size() == 6 &&
-			i1.size() == 8 &&
-			i2.size() == 6) {
-
-			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1) ||
-				(i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1))
-					return 60;
-		}
-
-		if (intervals.size() == 3 && size == 26 &&
-		    i0.size() == 6 &&
-			i1.size() == 10 &&
-			i2.size() == 4) {
-
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 3) ||
-				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 3))
-					return 61;
-		}
-
-		return -1;
-	}
 	
-	public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
+public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
 		
 		int n = ((cycle.size() / 2) - 2)/4;
 		
@@ -1205,20 +704,41 @@ public class Approximation {
 
 	public static void computeEnergy(UndirGraph molecule) throws IOException {
 		
-		int [] cyclesConfigurations = new int [] {2, 2, 2, 1, 2, 2, 1, 1, 1, 2, 1, 0, 0, 0, 0};
+		int [] cyclesConfigurations = new int [] {2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1};
 		int [] circuits = new int [MAX_CYCLE_SIZE];
 		
 		Utils.initSubstractTable();
 		
 		List<ArrayList<Integer>> cycles = computeCycles(molecule);
 		
+		List<ArrayList<ArrayList<Integer>>> oldMethod = new ArrayList<ArrayList<ArrayList<Integer>>>();
+		List<ArrayList<ArrayList<Integer>>> newMethod = new ArrayList<ArrayList<ArrayList<Integer>>>();
+		
+		for (int i = 0 ; i <= 15 ; i++) {
+			oldMethod.add(new ArrayList<ArrayList<Integer>>());
+			newMethod.add(new ArrayList<ArrayList<Integer>>());
+		}
+		
 		for (ArrayList<Integer> cycle : cycles) {
 			
+			EdgeSet edges = computeStraightEdges(molecule, cycle);
+			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, edges);
+			Collections.sort(intervals);
 			
 			int cycleConfiguration = getCycleIndex(molecule, cycle);
 			
-			//TODO: changer la condition
-			if (cycleConfiguration <= 10) {
+			int cycleConfigurationNew = Utils.identifyMinimalCycle(molecule, cycle, intervals);
+			
+			if (cycleConfiguration != -1)
+				oldMethod.get(cycleConfiguration).add(cycle);
+			
+			if (cycleConfigurationNew != -1)
+				newMethod.get(cycleConfigurationNew).add(cycle);
+			
+			if (cycleConfigurationNew != -1) {
+			
+			//if (cyclesConfigurations[cycleConfiguration] != -1) {	
+			//if (cycleConfiguration != -1) {
 				
 				SubMolecule subMolecule = substractCycle(molecule, cycle);
 				int nbPerfectMatching = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
@@ -1234,16 +754,19 @@ public class Approximation {
 		
 		BufferedWriter w = new BufferedWriter(new FileWriter(new File("unknown_circuits")));
 		
+		int cptCor = 0;
+		
 		for (ArrayList<Integer> cycle : redundantCycles){
-	
-			if (index == 59)
-				System.out.print("");
 			
 			EdgeSet edges = computeStraightEdges(molecule, cycle);
 			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, edges);
 			Collections.sort(intervals);
 			
-			int configuration = identifyCircuitsUnion(molecule, cycle);
+			int configuration = Utils.identifyCircuit(molecule, cycle, intervals);
+			
+			if (configuration == 12)
+				cptCor ++;
+			
 			if (configuration != -1) {
 				int [] toSubstract = circuitsToSubstract[configuration];
 				
@@ -1261,6 +784,22 @@ public class Approximation {
 			index ++;
 		}
 
+		String l0 = "";
+		String l1 = "";
+		String l2 = "";
+		
+		
+		System.out.println(cptCor + " coronenes");
+		for (int i = 0 ; i < 16 ; i++) {
+			l0 += i + "\t";
+			l1 += oldMethod.get(i).size() + "\t";
+			l2 += newMethod.get(i).size() + "\t";
+		}
+		
+		System.out.println(l0);
+		System.out.println(l1);
+		System.out.println(l2);
+		
 		w.close();
 		
 		for (int i = 0 ; i < circuits.length ; i++){
