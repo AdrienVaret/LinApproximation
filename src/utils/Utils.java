@@ -123,13 +123,13 @@ public class Utils {
 		Approximation.circuitsToSubstract[12][1] = 13;
 
 		Approximation.circuitsToSubstract[16][0] = 0;
-		Approximation.circuitsToSubstract[16][1] = 2;
+		Approximation.circuitsToSubstract[16][1] = 4;
 
 		Approximation.circuitsToSubstract[17][0] = 0;
-		Approximation.circuitsToSubstract[17][1] = 2;
+		Approximation.circuitsToSubstract[17][1] = 4;
 
 		Approximation.circuitsToSubstract[18][0] = 0;
-		Approximation.circuitsToSubstract[18][1] = 2;
+		Approximation.circuitsToSubstract[18][1] = 4;
 
 		Approximation.circuitsToSubstract[19][0] = 0;
 		Approximation.circuitsToSubstract[19][1] = 1;
