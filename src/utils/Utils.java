@@ -2,10 +2,7 @@ package utils;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-
 import graphs.Node;
 import graphs.UndirGraph;
 import solver.Approximation;
@@ -13,111 +10,114 @@ import solver.BenzenoidsSolver;
 
 public class Utils {
 
-	//DEBUG
-	public static int [] t = new int [54];
-	
+	// DEBUG
+	public static int[] t = new int[54];
+
 	public static int getHexagonId(int x, int y) {
 		return x + y * BenzenoidsSolver.taille;
 	}
-	
+
 	public static int getEdgeId(int x, int y, int edgeBoard) {
-		
-		if(edgeBoard == BenzenoidsSolver.HIGH_RIGHT && y > 0)
+
+		if (edgeBoard == BenzenoidsSolver.HIGH_RIGHT && y > 0)
 			return (x + (y - 1) * BenzenoidsSolver.taille) * 6 + 3;
-		
-		else if(edgeBoard == BenzenoidsSolver.LEFT && x > 0)
+
+		else if (edgeBoard == BenzenoidsSolver.LEFT && x > 0)
 			return (x - 1 + y * BenzenoidsSolver.taille) * 6 + 1;
-		
+
 		else if (edgeBoard == BenzenoidsSolver.HIGHT_LEFT && x > 0 && y > 0)
 			return (x - 1 + (y - 1) * BenzenoidsSolver.taille) * 6 + 2;
-		
+
 		else
 			return (x + y * BenzenoidsSolver.taille) * 6 + edgeBoard;
 	}
-	
+
 	public static Point getHexagonCoordinates(int index) {
-		
+
 		int y = (int) Math.floor(index / BenzenoidsSolver.taille);
 		int x = index - (BenzenoidsSolver.taille * y);
-		
+
 		return new Point(x, y);
 	}
-	
+
 	public static double angle(Vector2D u, Vector2D v) {
 		double angle = Vector2D.angle(u, v);
-		
-		if(!(u.getX() * v.getY() - u.getY() * v.getX() < 0))
-		    angle = -angle;
-		
+
+		if (!(u.getX() * v.getY() - u.getY() * v.getX() < 0))
+			angle = -angle;
+
 		return angle;
 	}
-	
+
 	public static double orientedAngle(Node u, Node v, Node w) {
 
-		   Vector2D v1 = new Vector2D(v.getX() - u.getX(), v.getY() - u.getY());
-		   Vector2D v2 = new Vector2D(w.getX() - v.getX(), w.getY() - v.getY());
-		    
-		   return Math.atan2(v1.getX(), v1.getY()) - Math.atan2(v2.getX(), v2.getY());
+		Vector2D v1 = new Vector2D(v.getX() - u.getX(), v.getY() - u.getY());
+		Vector2D v2 = new Vector2D(w.getX() - v.getX(), w.getY() - v.getY());
+
+		return Math.atan2(v1.getX(), v1.getY()) - Math.atan2(v2.getX(), v2.getY());
 	}
-	
-	public static ArrayList<Integer> computeDomainX1(Cycle cycle){
+
+	public static ArrayList<Integer> computeDomainX1(Cycle cycle) {
 		ArrayList<Integer> domain = new ArrayList<Integer>();
-		for (int i = 0 ; i < cycle.getNodes().length ; i++) {
+		for (int i = 0; i < cycle.getNodes().length; i++) {
 			if (cycle.getNode(i) != -1) {
 				domain.add(i);
 			}
 		}
 		return domain;
 	}
-	
-	public static ArrayList<Integer> computeDomainX2(Cycle cycle, int x1){
+
+	public static ArrayList<Integer> computeDomainX2(Cycle cycle, int x1) {
 		ArrayList<Integer> domain = new ArrayList<Integer>();
-		
+
 		int v = cycle.getNode(x1);
-		
+
 		while (true) {
 			domain.add(v);
 			v = cycle.getNode(v);
-			if (v == x1) break;
+			if (v == x1)
+				break;
 		}
-		
-		return domain;
-	}
-	
-	public static ArrayList<Integer> computeDomainX3(Cycle cycle, int x1, int x2){
-		ArrayList<Integer> domain = new ArrayList<Integer>();
-		
-		int v = x2;
-		while(true) {
-			domain.add(v);
-			v = cycle.getNode(v);
-			if (v == x1) break;
-		}
-		
+
 		return domain;
 	}
 
-	public static ArrayList<Integer> computeDomainX4(Cycle cycle, int x1, int x2, int x3){
+	public static ArrayList<Integer> computeDomainX3(Cycle cycle, int x1, int x2) {
 		ArrayList<Integer> domain = new ArrayList<Integer>();
-		
+
+		int v = x2;
+		while (true) {
+			domain.add(v);
+			v = cycle.getNode(v);
+			if (v == x1)
+				break;
+		}
+
+		return domain;
+	}
+
+	public static ArrayList<Integer> computeDomainX4(Cycle cycle, int x1, int x2, int x3) {
+		ArrayList<Integer> domain = new ArrayList<Integer>();
+
 		int v = cycle.getNode(x3);
-		
-		while(true) {
-			
-			if (v == x1) break;
-			
+
+		while (true) {
+
+			if (v == x1)
+				break;
+
 			if (v != cycle.getNode(x3))
 				domain.add(v);
 
 			v = cycle.getNode(v);
 
 		}
-		
+
 		return domain;
 	}
-	
-	public static void initSubstractTable(){
-		Approximation.circuitsToSubstract = new int [49][2];
+
+	public static void initSubstractTable() {
+		Approximation.circuitsToSubstract = new int[49][2];
 
 		Approximation.circuitsToSubstract[12][0] = 3;
 		Approximation.circuitsToSubstract[12][1] = 13;
@@ -127,7 +127,7 @@ public class Utils {
 
 		Approximation.circuitsToSubstract[17][0] = 0;
 		Approximation.circuitsToSubstract[17][1] = 4;
- 
+
 		Approximation.circuitsToSubstract[18][0] = 0;
 		Approximation.circuitsToSubstract[18][1] = 4;
 
@@ -221,9 +221,8 @@ public class Utils {
 		Approximation.circuitsToSubstract[48][0] = 0;
 		Approximation.circuitsToSubstract[48][1] = 1;
 
-
 	}
-	
+
 	public static void initTab() {
 		t[0] = 0;
 		t[1] = 1;
@@ -280,120 +279,108 @@ public class Utils {
 		t[52] = 141;
 		t[53] = 147;
 	}
-	
-	private static void getCofactor(int mat[][], int temp[][], int p, int q, int n) { 
-       int i = 0, j = 0; 
-     
-       // Looping for each element of  
-       // the matrix 
-       for (int row = 0; row < n; row++) 
-       { 
-           for (int col = 0; col < n; col++) 
-           { 
-                 
-               // Copying into temporary matrix  
-               // only those element which are  
-               // not in given row and column 
-               if (row != p && col != q) 
-               { 
-                   temp[i][j++] = mat[row][col]; 
-     
-                   // Row is filled, so increase  
-                   // row index and reset col  
-                   //index 
-                   if (j == n - 1) 
-                   { 
-                       j = 0; 
-                       i++; 
-                   } 
-               } 
-           } 
-       } 
-   } 
-     
-	
-	
-   /* Recursive function for finding determinant 
-   of matrix. n is current dimension of mat[][]. */
-   public static int computeMatrixDeterminant(int mat[][], int n) { 
-       int D = 0; // Initialize result 
-     
-       // Base case : if matrix contains single 
-       // element 
-       if (n == 1) 
-           return mat[0][0]; 
-         
-       // To store cofactors 
-       int temp[][] = new int[n][n];  
-         
-       // To store sign multiplier 
-       int sign = 1;  
-     
-       // Iterate for each element of first row 
-       for (int f = 0; f < n; f++) 
-       { 
-           // Getting Cofactor of mat[0][f] 
-           getCofactor(mat, temp, 0, f, n); 
-           D += sign * mat[0][f]  
-              * computeMatrixDeterminant(temp, n - 1); 
-     
-           // terms are to be added with  
-           // alternate sign 
-           sign = -sign; 
-       } 
-     
-       return D; 
-   }
-   
-   public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2) {
-	   if (intervals.size() == 2) {
-		   if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2)
-			  return true;
-	   }
-	   return false;
-   }
-   
-   public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3) {
-	   if (intervals.size() == 3) {
-		   if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3)
-			  return true;
-	   }
-	   return false;
-   }
-   
-   public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3, int s4) {
-	   if (intervals.size() == 4) {
-		   if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3 && 
-			   intervals.get(3).size() == s4)
-			   		return true;
-	   }
-	   return false;
-   }
-   
-   public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3, int s4, int s5) {
-	   if (intervals.size() == 5) {
-		   if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3 && 
-			   intervals.get(3).size() == s4 && intervals.get(4).size() == s5)
-			   		return true;
-	   }
-	   return false;
-   }
-   
-   public static int identifyCircuit(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
-	   
 
-		int size = cycle.size() / 2;
-		
-		
+	private static void getCofactor(int mat[][], int temp[][], int p, int q, int n) {
+		int i = 0, j = 0;
+
+		// Looping for each element of
+		// the matrix
+		for (int row = 0; row < n; row++) {
+			for (int col = 0; col < n; col++) {
+
+				// Copying into temporary matrix
+				// only those element which are
+				// not in given row and column
+				if (row != p && col != q) {
+					temp[i][j++] = mat[row][col];
+
+					// Row is filled, so increase
+					// row index and reset col
+					// index
+					if (j == n - 1) {
+						j = 0;
+						i++;
+					}
+				}
+			}
+		}
+	}
+
+	/*
+	 * Recursive function for finding determinant of matrix. n is current dimension
+	 * of mat[][].
+	 */
+	public static int computeMatrixDeterminant(int mat[][], int n) {
+		int D = 0; // Initialize result
+
+		// Base case : if matrix contains single
+		// element
+		if (n == 1)
+			return mat[0][0];
+
+		// To store cofactors
+		int temp[][] = new int[n][n];
+
+		// To store sign multiplier
+		int sign = 1;
+
+		// Iterate for each element of first row
+		for (int f = 0; f < n; f++) {
+			// Getting Cofactor of mat[0][f]
+			getCofactor(mat, temp, 0, f, n);
+			D += sign * mat[0][f] * computeMatrixDeterminant(temp, n - 1);
+
+			// terms are to be added with
+			// alternate sign
+			sign = -sign;
+		}
+
+		return D;
+	}
+
+	public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2) {
+		if (intervals.size() == 2) {
+			if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2)
+				return true;
+		}
+		return false;
+	}
+
+	public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3) {
+		if (intervals.size() == 3) {
+			if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3)
+				return true;
+		}
+		return false;
+	}
+
+	public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3, int s4) {
+		if (intervals.size() == 4) {
+			if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3
+					&& intervals.get(3).size() == s4)
+				return true;
+		}
+		return false;
+	}
+
+	public static boolean checkSize(ArrayList<Interval> intervals, int s1, int s2, int s3, int s4, int s5) {
+		if (intervals.size() == 5) {
+			if (intervals.get(0).size() == s1 && intervals.get(1).size() == s2 && intervals.get(2).size() == s3
+					&& intervals.get(3).size() == s4 && intervals.get(4).size() == s5)
+				return true;
+		}
+		return false;
+	}
+
+	public static int identifyCircuit(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
+
 		Interval i0 = null;
 		Interval i1 = null;
 		Interval i2 = null;
 		Interval i3 = null;
 		Interval i4 = null;
-		
-		int n = intervals.size();
-		
-		for (int i = 0 ; i < intervals.size() ; i++) {
+
+		for (int i = 0; i < intervals.size(); i++) {
 			if (i == 0)
 				i0 = intervals.get(i);
 			if (i == 1)
@@ -405,272 +392,535 @@ public class Utils {
 			if (i == 4)
 				i4 = intervals.get(i);
 		}
-	   
+
 		/*
 		 * I
 		 */
-		
+
 		if (checkSize(intervals, 4, 6, 4)) {
-			
+
 			if (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1)
 				return 12;
 		}
-		
+
 		/*
 		 * II
 		 */
-		
+
 		if (checkSize(intervals, 4, 8, 4)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
-					return 16;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 16;
 		}
-		
+
 		if (checkSize(intervals, 2, 4, 6, 4)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1) ||
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1))
-					return 17;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1))
+				return 17;
 		}
-		
+
 		if (checkSize(intervals, 4, 6, 4, 2)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1) || 
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1))
-					return 18;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1))
+				return 18;
 		}
-		
+
 		if (checkSize(intervals, 4, 6, 6, 2)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x2() == i1.x2()) || 
-				(i0.x2() == i2.x2() && i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1))
-					return 19;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x2() == i1.x2())
+					|| (i0.x2() == i2.x2() && i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1))
+				return 19;
 		}
-		
+
 		if (checkSize(intervals, 4, 6, 4, 4)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i1.x2() - 1) ||
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i1.x1() + 1))
-					return 20;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i1.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i1.x1() + 1))
+				return 20;
 		}
-		
+
 		if (checkSize(intervals, 2, 8, 6)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
-					return 21;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 21;
 		}
-		
+
 		if (checkSize(intervals, 6, 8, 4)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1))
-					return 22;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1))
+				return 22;
 		}
-		
+
 		if (checkSize(intervals, 2, 6, 6, 4)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1) || 
-				(i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1))
-					return 23;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1))
+				return 23;
 		}
-		
+
 		if (checkSize(intervals, 4, 4, 6, 2)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i3.x2() == i2.x2() - 1) || 
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i3.x1() == i2.x1() + 1))
-					return 24;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i3.x2() == i2.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i3.x1() == i2.x1() + 1))
+				return 24;
 		}
-		
+
 		/*
 		 * V
 		 */
-		
+
 		if (checkSize(intervals, 4, 10, 4)) {
-			
+
 			if (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 3)
 				return 25;
 		}
-		
+
 		if (checkSize(intervals, 2, 4, 6, 4, 2)) {
-			
+
 			if (i0.x2() == i2.x2() && i1.x2() == i3.x2() && i3.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 3)
 				return 26;
-			
+
 			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i3.x1() == i2.x1() + 1 && i4.x1() == i3.x1() + 3)
 				return 27;
 		}
-		
-		if (checkSize(intervals, 4, 6, 4, 2, 2) && Approximation.intervalsOnSameLine(i3,  i4)) {
-		
+
+		if (checkSize(intervals, 4, 6, 4, 2, 2) && Approximation.intervalsOnSameLine(i3, i4)) {
+
 			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
 				return 28;
 		}
-		
+
 		if (checkSize(intervals, 2, 2, 4, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
-			
+
 			if (i0.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i0.x1() + 1 && i1.x2() == i3.x2())
 				return 29;
 		}
-		
+
 		/*
 		 * VII
 		 */
-		
+
 		if (checkSize(intervals, 4, 10, 6)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 3) || 
-				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 3))
-					return 30;
-			
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 3) || (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 3))
+				return 30;
+
 		}
-		
+
 		if (checkSize(intervals, 6, 10, 4)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 3) ||
-				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 3))
-					return 31;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 3) || (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 3))
+				return 31;
 		}
-		
+
 		if (checkSize(intervals, 2, 4, 6, 4, 4)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1) || 
-				(i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 1))
-					return 32;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1)
+					|| (i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 1))
+				return 32;
 		}
-		
+
 		if (checkSize(intervals, 2, 4, 6, 6, 2)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1 && i1.x1() == i3.x1() && i4.x2() == i2.x2()) ||
-				(i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x1() == i2.x1()))
-					return 33;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1 && i1.x1() == i3.x1() && i4.x2() == i2.x2())
+					|| (i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x1() == i2.x1()))
+				return 33;
 		}
-		
+
 		if (checkSize(intervals, 2, 6, 6, 4, 2)) {
-			
-			if ((i1.x1() == i3.x1() && i2.x1() == i4.x1() && i1.x1() == i2.x1() + 1 && i0.x1() == i1.x1() + 3) || 
-				(i1.x2() == i3.x2() && i2.x2() == i4.x2() && i1.x2() == i2.x2() - 1 && i0.x2() == i1.x2() - 3))
+
+			if ((i1.x1() == i3.x1() && i2.x1() == i4.x1() && i1.x1() == i2.x1() + 1 && i0.x1() == i1.x1() + 3)
+					|| (i1.x2() == i3.x2() && i2.x2() == i4.x2() && i1.x2() == i2.x2() - 1 && i0.x2() == i1.x2() - 3))
 				return 34;
 		}
-		
+
 		if (checkSize(intervals, 4, 4, 6, 4, 2)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x1() == i2.x1()) || 
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i2.x1() + 1 && i4.x2() == i2.x2()))
-					return 35;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x1() == i2.x1())
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i2.x1() + 1 && i4.x2() == i2.x2()))
+				return 35;
 		}
-		
+
 		if (checkSize(intervals, 2, 2, 6, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
-			
-			if ((i0.x1() == i3.x1() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1 && i1.x2() == i3.x2()) ||
-				(i0.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i0.x1() + 1 && i1.x2() == i3.x2()))
-					return 36;
-				
+
+			if ((i0.x1() == i3.x1() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1 && i1.x2() == i3.x2())
+					|| (i0.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i0.x1() + 1 && i1.x2() == i3.x2()))
+				return 36;
+
 		}
-		
-		if (checkSize(intervals, 4, 6, 6, 2, 2) && Approximation.intervalsOnSameLine(i3,  i4)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i4.x2() && i2.x2() == i4.x2() - 1 && i3.x1() == i1.x1()) ||
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2()))
+
+		if (checkSize(intervals, 4, 6, 6, 2, 2) && Approximation.intervalsOnSameLine(i3, i4)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i4.x2() && i2.x2() == i4.x2() - 1 && i3.x1() == i1.x1())
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2()))
 				return 37;
 		}
-		
+
 		if (checkSize(intervals, 2, 4, 8, 6)) {
-			if ((i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 3) ||
-				(i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 3))
+			if ((i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 3)
+					|| (i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 3))
 				return 38;
 		}
-		
+
 		if (checkSize(intervals, 6, 8, 4, 2)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 3) ||
-				(i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 3))
-					return 39;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 3)
+					|| (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 3))
+				return 39;
 		}
-		
+
 		if (checkSize(intervals, 4, 8, 4, 4)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x1() - 1))
-					return 40;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1)
+					|| (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x1() - 1))
+				return 40;
 		}
-		
+
 		if (checkSize(intervals, 4, 4, 8, 4)) {
-			
-			if ((i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i3.x1() - 1) ||
-			    (i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i3.x2() == i2.x2() - 1))
-			    	return 41;
+
+			if ((i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i3.x1() - 1)
+					|| (i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i3.x2() == i2.x2() - 1))
+				return 41;
 		}
-		
+
 		/*
 		 * X
 		 */
-		
+
 		if (checkSize(intervals, 6, 10, 6)) {
-			
-			if ((i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() - 3) ||
-				(i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() + 3))
-					return 42;
+
+			if ((i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() - 3)
+					|| (i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() + 3))
+				return 42;
 		}
-		
+
 		if (checkSize(intervals, 4, 4, 6, 4, 4)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x2() == i3.x2() - 1) ||
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1))
-					return 43;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x2() == i3.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1))
+				return 43;
 		}
-		
+
 		if (checkSize(intervals, 2, 6, 6, 6, 2)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 3) ||
-				(i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1 && i4.x1() == i3.x1() + 3))
-					return 44;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 3)
+					|| (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1
+							&& i4.x1() == i3.x1() + 3))
+				return 44;
 		}
-		
-		if (checkSize(intervals, 2, 2, 8, 6, 4) && Approximation.intervalsOnSameLine(i0,  i1)) {
-			
+
+		if (checkSize(intervals, 2, 2, 8, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
+
 			if (i0.x1() == i3.x1() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1 && i1.x2() == i3.x2())
 				return 45;
 		}
-		
+
 		if (checkSize(intervals, 4, 6, 8, 2, 2) && Approximation.intervalsOnSameLine(i3, i4)) {
-			
+
 			if (i1.x1() == i3.x1() && i2.x1() == i3.x1() - 1 && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
 				return 46;
 		}
-		
+
 		if (checkSize(intervals, 6, 8, 4, 4)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1))
-					return 47;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1)
+					|| (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1))
+				return 47;
 		}
-		
+
 		if (checkSize(intervals, 4, 4, 8, 6)) {
-			
-			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1) ||
-				(i0.x2() == i1.x2() - 1 && i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1))
-					return 48;
+
+			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1)
+					|| (i0.x2() == i1.x2() - 1 && i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1))
+				return 48;
 		}
-		
-	    return -1;
-   }
-   
-   public static int identifyMinimalCycle(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
-	   
-	   int size = cycle.size() / 2;
-		
+
+		return -1;
+	}
+
+	public static int identifyMinimalCycle(UndirGraph molecule, ArrayList<Integer> cycle,
+			ArrayList<Interval> intervals) {
 		
 		Interval i0 = null;
 		Interval i1 = null;
 		Interval i2 = null;
 		Interval i3 = null;
+
+		for (int i = 0; i < intervals.size(); i++) {
+			if (i == 0)
+				i0 = intervals.get(i);
+			if (i == 1)
+				i1 = intervals.get(i);
+			if (i == 2)
+				i2 = intervals.get(i);
+			if (i == 3)
+				i3 = intervals.get(i);
+		}
+
+		/*
+		 * 0
+		 */
+
+		if (intervals.size() == 1 && i0.size() == 2)
+			return 0;
+
+		/*
+		 * 1
+		 */
+
+		if (intervals.size() == 1 && i0.size() == 4)
+			return 1;
+
+		if (checkSize(intervals, 2, 2)) {
+
+			if (i0.x1() == i1.x1() - 1 || i0.x1() == i1.x1() + 1)
+				return 1;
+		}
+
+		/*
+		 * 2
+		 */
+
+		if (intervals.size() == 1 && i0.size() == 6)
+			return 2;
+
+		if (checkSize(intervals, 2, 2, 2)) {
+
+			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1)
+					|| (i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1))
+				return 2;
+
+		}
+
+		/*
+		 * 3
+		 */
+
+		if (checkSize(intervals, 4, 2)) {
+
+			if (i0.x2() == i1.x2() - 1 || i0.x1() == i1.x1() + 1)
+				return 3;
+		}
+
+		if (checkSize(intervals, 2, 4)) {
+
+			if (i0.x2() == i1.x2() + 1 || i0.x1() == i1.x1() - 1)
+				return 3;
+		}
+
+		if (checkSize(intervals, 2, 2, 2)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 3;
+
+		}
+
+		/*
+		 * 4
+		 */
+
+		if (checkSize(intervals, 4, 4)) {
+
+			if (i0.x1() == i1.x1() + 1 || i0.x2() == i1.x2() - 1)
+				return 4;
+		}
+
+		if (checkSize(intervals, 2, 4, 2)) {
+
+			if (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1)
+				return 4;
+		}
+
+		/*
+		 * 5
+		 */
+
+		if (intervals.size() == 1 && i0.size() == 8)
+			return 5;
+
+		if (checkSize(intervals, 2, 2, 2, 2)) {
+
+			if (i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1 && i2.x1() == i3.x1() - 1)
+				return 5;
+
+			if (i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1 && i2.x2() == i3.x2() + 1)
+				return 5;
+		}
+
+		/*
+		 * 6
+		 */
+
+		if (checkSize(intervals, 2, 6)) {
+
+			if (i0.x2() == i1.x2() + 1 || i0.x1() == i1.x1() - 1)
+				return 6;
+		}
+
+		if (checkSize(intervals, 6, 2)) {
+
+			if (i0.x2() == i1.x2() - 1 || i0.x1() == i1.x1() + 1)
+				return 6;
+		}
+
+		if (checkSize(intervals, 4, 2, 2)) {
+
+			if ((i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1)
+					|| (i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1))
+				return 6;
+		}
+
+		if (checkSize(intervals, 2, 2, 4)) {
+
+			if ((i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1)
+					|| (i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1))
+				return 6;
+		}
+
+		if (checkSize(intervals, 2, 2, 2, 2)) {
+
+			if ((i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 1)
+					|| (i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 1)
+					|| (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1))
+				return 6;
+
+		}
+
+		/*
+		 * 7
+		 */
+
+		if (checkSize(intervals, 2, 4, 2)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1))
+				return 7;
+		}
+
+		/*
+		 * 8
+		 */
+
+		if (checkSize(intervals, 4, 4, 2)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() - 1) || (i0.x1() == i2.x1() && i1.x1() == i2.x1() + 1))
+				return 8;
+		}
+
+		if (checkSize(intervals, 2, 4, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() + 1) || (i0.x2() == i2.x2() && i1.x2() == i2.x2() - 1))
+				return 8;
+		}
+
+		if (checkSize(intervals, 2, 6, 2)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 8;
+		}
+
+		/*
+		 * 9
+		 */
+
+		if (checkSize(intervals, 4, 6)) {
+
+			if (i0.x2() == i1.x2() + 1 || i0.x1() == i1.x1() - 1)
+				return 9;
+		}
+
+		if (checkSize(intervals, 6, 4)) {
+
+			if (i0.x2() == i1.x2() - 1 || i0.x1() == i1.x1() + 1)
+				return 9;
+		}
+
+		if (checkSize(intervals, 2, 2, 4, 2)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1))
+				return 9;
+		}
+
+		if (checkSize(intervals, 2, 4, 2, 2)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i3.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i3.x1() + 1))
+				return 9;
+		}
+
+		if (checkSize(intervals, 2, 4, 4)) {
+
+			if ((i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1)
+					|| (i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1))
+				return 9;
+		}
+
+		if (checkSize(intervals, 4, 4, 2)) {
+			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1)
+					|| (i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1))
+				return 9;
+		}
+
+		/*
+		 * 10
+		 */
+
+		if (checkSize(intervals, 4, 4, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1))
+				return 10;
+		}
+
+		if (checkSize(intervals, 2, 6, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 10;
+
+		}
+
+		if (checkSize(intervals, 4, 6, 2)) {
+			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1) || (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1))
+				return 10;
+		}
+
+		/*
+		 * 15
+		 */
+
+		if (checkSize(intervals, 6, 6)) {
+
+			if (i0.x1() == i1.x1() - 1 || i0.x1() == i1.x1() + 1)
+				return 15;
+		}
+
+		if (checkSize(intervals, 4, 4, 4)) {
+
+			if ((i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1)
+					|| (i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1))
+				return 15;
+		}
+
+		if (checkSize(intervals, 2, 4, 4, 2)) {
+			if ((i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() + 1)
+					|| (i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() - 1))
+				return 15;
+		}
+
+		return -1;
+	}
+
+	public static int identifyCycle(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
+
+		Interval i0 = null;
+		Interval i1 = null;
+		Interval i2 = null;
+		Interval i3 = null;
 		Interval i4 = null;
-		
-		int n = intervals.size();
-		
-		for (int i = 0 ; i < intervals.size() ; i++) {
+
+		for (int i = 0; i < intervals.size(); i++) {
 			if (i == 0)
 				i0 = intervals.get(i);
 			if (i == 1)
@@ -682,469 +932,509 @@ public class Utils {
 			if (i == 4)
 				i4 = intervals.get(i);
 		}
-		
+
+		/**
+		 * Minimal cycles
+		 */
+
 		/*
 		 * 0
 		 */
-		
+
 		if (intervals.size() == 1 && i0.size() == 2)
 			return 0;
-		
+
 		/*
 		 * 1
 		 */
-		
+
 		if (intervals.size() == 1 && i0.size() == 4)
 			return 1;
-		
+
 		if (checkSize(intervals, 2, 2)) {
-			
+
 			if (i0.x1() == i1.x1() - 1 || i0.x1() == i1.x1() + 1)
 				return 1;
 		}
-		
+
 		/*
 		 * 2
 		 */
-		
+
 		if (intervals.size() == 1 && i0.size() == 6)
 			return 2;
-		
+
 		if (checkSize(intervals, 2, 2, 2)) {
-			
-			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1) || 
-				(i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1))
-					return 2;
-			
-			
+
+			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1)
+					|| (i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1))
+				return 2;
+
 		}
-	   
+
 		/*
 		 * 3
 		 */
-		
+
 		if (checkSize(intervals, 4, 2)) {
-			
+
 			if (i0.x2() == i1.x2() - 1 || i0.x1() == i1.x1() + 1)
 				return 3;
 		}
-		
+
 		if (checkSize(intervals, 2, 4)) {
-			
+
 			if (i0.x2() == i1.x2() + 1 || i0.x1() == i1.x1() - 1)
 				return 3;
 		}
-		
+
 		if (checkSize(intervals, 2, 2, 2)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
-					return 3;
-			
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 3;
+
 		}
-		
+
 		/*
 		 * 4
 		 */
-		
+
 		if (checkSize(intervals, 4, 4)) {
-			
+
 			if (i0.x1() == i1.x1() + 1 || i0.x2() == i1.x2() - 1)
 				return 4;
 		}
-		
+
 		if (checkSize(intervals, 2, 4, 2)) {
-			
+
 			if (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1)
 				return 4;
 		}
-		
+
 		/*
 		 * 5
 		 */
-		
+
 		if (intervals.size() == 1 && i0.size() == 8)
 			return 5;
-		
+
 		if (checkSize(intervals, 2, 2, 2, 2)) {
-			
+
 			if (i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1 && i2.x1() == i3.x1() - 1)
 				return 5;
-			
+
 			if (i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1 && i2.x2() == i3.x2() + 1)
 				return 5;
 		}
-		
+
 		/*
 		 * 6
 		 */
-		
+
 		if (checkSize(intervals, 2, 6)) {
-			
+
 			if (i0.x2() == i1.x2() + 1 || i0.x1() == i1.x1() - 1)
 				return 6;
 		}
-		
+
 		if (checkSize(intervals, 6, 2)) {
-			
+
 			if (i0.x2() == i1.x2() - 1 || i0.x1() == i1.x1() + 1)
 				return 6;
 		}
-		
+
 		if (checkSize(intervals, 4, 2, 2)) {
-			
-			if ((i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1) || 
-				(i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1))
-					return 6;
+
+			if ((i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1)
+					|| (i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1))
+				return 6;
 		}
-		
+
 		if (checkSize(intervals, 2, 2, 4)) {
-			
-			if ((i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1) || 
-				(i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1))
-					return 6;
+
+			if ((i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1)
+					|| (i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1))
+				return 6;
 		}
-		
+
 		if (checkSize(intervals, 2, 2, 2, 2)) {
-			
-			if ((i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 1) ||
-				(i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1) ||
-				(i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1))
-					return 6;
-			
+
+			if ((i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 1)
+					|| (i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 1)
+					|| (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1))
+				return 6;
+
 		}
-		
+
 		/*
 		 * 7
 		 */
-		
+
 		if (checkSize(intervals, 2, 4, 2)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1))
-					return 7;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1))
+				return 7;
 		}
-		
+
 		/*
 		 * 8
 		 */
-		
+
 		if (checkSize(intervals, 4, 4, 2)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() - 1) ||
-				(i0.x1() == i2.x1() && i1.x1() == i2.x1() + 1))
-					return 8;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() - 1) || (i0.x1() == i2.x1() && i1.x1() == i2.x1() + 1))
+				return 8;
 		}
-		
+
 		if (checkSize(intervals, 2, 4, 4)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() + 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i2.x2() - 1))
-					return 8;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() + 1) || (i0.x2() == i2.x2() && i1.x2() == i2.x2() - 1))
+				return 8;
 		}
-		
+
 		if (checkSize(intervals, 2, 6, 2)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
-					return 8;
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 8;
 		}
-		
+
 		/*
 		 * 9
 		 */
-		
+
 		if (checkSize(intervals, 4, 6)) {
-			
+
 			if (i0.x2() == i1.x2() + 1 || i0.x1() == i1.x1() - 1)
 				return 9;
 		}
-		
+
 		if (checkSize(intervals, 6, 4)) {
-			
+
 			if (i0.x2() == i1.x2() - 1 || i0.x1() == i1.x1() + 1)
 				return 9;
 		}
-		
+
 		if (checkSize(intervals, 2, 2, 4, 2)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1) ||
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1))
-					return 9;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1))
+				return 9;
 		}
-		
+
 		if (checkSize(intervals, 2, 4, 2, 2)) {
-			
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i3.x2() - 1) ||
-				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i3.x1() + 1))
-					return 9;
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i3.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i3.x1() + 1))
+				return 9;
 		}
-		
+
 		if (checkSize(intervals, 2, 4, 4)) {
-			
-			if ((i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1) ||
-				(i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1))
-					return 9;
+
+			if ((i0.x2() == i1.x2() + 1 && i1.x2() == i2.x2() + 1)
+					|| (i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1))
+				return 9;
 		}
-		
+
 		if (checkSize(intervals, 4, 4, 2)) {
-			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1) ||
-				(i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1))
-					return 9;
+			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1)
+					|| (i0.x2() == i1.x2() - 1 && i1.x2() == i2.x2() - 1))
+				return 9;
 		}
-		
+
 		/*
 		 * 10
 		 */
-		
-		if (checkSize(intervals, 4, 4 ,4)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1))
-					return 10;
+
+		if (checkSize(intervals, 4, 4, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1))
+				return 10;
 		}
-		
+
 		if (checkSize(intervals, 2, 6, 4)) {
-			
-			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) ||
-				(i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
-					return 10;
-				
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 10;
+
 		}
-		
+
 		if (checkSize(intervals, 4, 6, 2)) {
-			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1) ||
-				(i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1))
-					return 10;
+			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1) || (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1))
+				return 10;
 		}
-	   
-	   
-	   /*
-	    * 15
-	    */
-	   
-	   if (checkSize(intervals, 6, 6)) {
-		   
-		   if (i0.x1() == i1.x1() - 1 || i0.x1() == i1.x1() + 1)
-			   return 15;
-	   }
-	   
-	   if (checkSize(intervals, 4, 4, 4)) {
-		   
-		   if ((i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1) ||
-			   (i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1))
-			   		return 15;
-	   }
-	   
-	   if (checkSize(intervals, 2, 4, 4, 2)) {
-		   if ((i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() + 1) ||
-			   (i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() - 1))
-			   		return 15;
-	   }
-	   
-	   
-	   return -1;
-   }
-   
-   public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
-		
-		int n = ((cycle.size() / 2) - 2)/4;
-		
-		if (n == 1)
-			return 0;
-		
-		else if (n == 2)
-			return 1;
-		
-		else {
-			EdgeSet edges = Approximation.computeStraightEdges(molecule, cycle);
-			
-			if (edges.size() == 2) {
-				
-				if (n == 3)
-					return 2;
-				
-				if (n == 4)
-					return 5;
-			}
-			
-			
-			else if (edges.size() == 4) {
-				
-				if (n == 3) {
-					
-					List<Interval> intervals = Approximation.computeIntervals(molecule, cycle, edges);
-					boolean condition = false;
-					
-					for (Interval interval : intervals) {
-						if (interval.size() == 2) {
-							condition = true;
-							break;
-						}
-					}
-					
-					if (condition)
-						return 3;
-					
-					else
-						return 4;
-				
-				}
-				
-				else if (n == 4) {
-					
-					List<Interval> intervals = Approximation.computeIntervals(molecule, cycle, edges);
-					boolean condition = false;
-					
-					for (Interval interval : intervals) {
-						if (interval.size() == 2) {
-							condition = true;
-							break;
-						}
-					}
-					
-					if (condition)
-						return 6;
-					
-					else
-						return 9;
-				}
-			}
-			
-			
-			else if (edges.size() == 6) {
-				
-				List<Interval> intervals = Approximation.computeIntervals(molecule, cycle, edges);
-				
-				List<Interval> intervalsSize2 = new ArrayList<Interval>();
-				List<Interval> intervalsSize4 = new ArrayList<Interval>();
-				List<Interval> intervalsSize6 = new ArrayList<Interval>();
-				
-				for (Interval interval : intervals) {
-					if (interval.size() == 2) intervalsSize2.add(interval);
-					if (interval.size() == 4) intervalsSize4.add(interval);
-					if (interval.size() == 6) intervalsSize6.add(interval);
-				}
-				
-				if (intervalsSize2.size() == 2 && intervalsSize4.size() == 1 && intervalsSize6.size() == 0) {
-					
-					Interval i2_1 = intervalsSize2.get(0);
-					Interval i2_2 = intervalsSize2.get(1);
-					Interval i4 = intervalsSize4.get(0);
-					
-					
-					if (i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) {
-						
-						if (i4.x1() < i2_1.x1() && i4.x2() > i2_1.x2())
-							return 4;
-						
-						if ((i4.x1() < i2_1.x1() && i4.x2() < i2_1.x2()) ||
-							(i4.x1() > i2_1.x1() && i4.x2() > i2_1.x2()))
-							return 7;
-							
-					}
-					
-					else if (i2_1.x1() != i2_2.x1() && i2_1.x1() != i2_2.x2()) {
-						
-						if (i2_1.y1() == i2_2.y1() && i2_1.y2() == i2_2.y2())
-							return 11;
-						
-						if ((i2_1.x1() == i4.x1() || i2_2.x1() == i4.x1()) ||
-							(i2_1.x2() == i4.x2() || i2_2.x2() == i4.x2()))
-							return 11;
-						
-						if ((i4.y1() > Math.min(i2_1.y1(), i2_2.y1()) && i4.y1() < Math.max(i2_1.y1(), i2_2.y1())) &&
-							(i4.y2() > Math.min(i2_1.y2(), i2_2.y2()) && i4.y2() < Math.max(i2_1.y2(), i2_2.y2())))
-							return 13;
-						
-						else 
-							return 6;
-					}
-				}
-				
-				if (intervalsSize2.size() == 1 && intervalsSize4.size() == 1 && intervalsSize6.size() == 1) {
-					return 10;
-				}
-				
-				if (intervalsSize2.size() == 0 && intervalsSize4.size() == 3 && intervalsSize6.size() == 0) {
-					return 10;
-				}
-				
-				if (intervalsSize2.size() == 2 && intervalsSize4.size() == 0 && intervalsSize6.size() == 1) {
-					
-					Interval i2_1 = intervalsSize2.get(0);
-					Interval i2_2 = intervalsSize2.get(1);
-					
-					if (i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) 	
-						return 8;
-					else
-						return 14;
-				}
-				
-				if (intervalsSize2.size() == 1 && intervalsSize4.size() == 2 && intervalsSize6.size() == 0) {
-					
-					Interval i2 = intervalsSize2.get(0);
-					Interval i4_1 = intervalsSize4.get(0);
-					Interval i4_2 = intervalsSize4.get(1);
-					
-					if ((i2.y1() > Math.min(i4_1.y1(), i4_2.y1()) && i2.y1() < Math.max(i4_1.y1(), i4_2.y1())) &&
-						(i2.y2() > Math.min(i4_1.y2(), i4_2.y2()) && i2.y2() < Math.max(i4_1.y2(), i4_2.y2()))) 
-						return 14;
-					
-					
-					else if ((i4_1.x1() == i2.x1() || i4_1.x2() == i2.x2()) ||
-						(i4_2.x1() == i2.x1() || i4_2.x2() == i2.x2()))
-						return 8;
-					
-					else
-						return 9;
-						
-				}
-				
-				if (intervalsSize2.size() == 0 && intervalsSize4.size() == 2 && intervalsSize6.size() == 1)
-					return 12;
-				
-				if (intervalsSize2.size() == 3 && intervalsSize4.size() == 0 && intervalsSize6.size() == 0) {
-					
-					Interval i2_1 = intervalsSize2.get(0);
-					Interval i2_2 = intervalsSize2.get(1);
-					Interval i2_3 = intervalsSize2.get(2);
-					
-					if ((i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) || 
-						(i2_1.x1() == i2_3.x1() && i2_1.x2() == i2_3.x2()) ||
-						(i2_2.x1() == i2_3.x1() && i2_3.x2() == i2_3.x2())) 
-						return 3;
-					
-					else
-						return 2;
-				}
-					
-			}
-			
-			else if (edges.size() == 8) {
-				
-				List<Interval> intervals = Approximation.computeIntervals(molecule, cycle, edges);
-				
-				Interval i2_1 = intervals.get(0);
-				Interval i2_2 = intervals.get(1);
-				Interval i2_3 = intervals.get(2);
-				Interval i2_4 = intervals.get(3);
-				
-				if ((i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) || 
-					(i2_1.x1() == i2_3.x1() && i2_1.x2() == i2_3.x2()) ||
-					(i2_1.x1() == i2_4.x1() && i2_1.x2() == i2_4.x2()) ||
-					(i2_2.x1() == i2_3.x1() && i2_2.x2() == i2_3.x2()) ||
-					(i2_2.x1() == i2_4.x1() && i2_2.x2() == i2_4.x2()) ||
-					(i2_3.x1() == i2_4.x1() && i2_3.x2() == i2_4.x2()))
-					return 13;
-				
-				else
-					return 5;
-			}
+
+		/*
+		 * 15
+		 */
+
+		if (checkSize(intervals, 6, 6)) {
+
+			if (i0.x1() == i1.x1() - 1 || i0.x1() == i1.x1() + 1)
+				return 15;
 		}
-		
+
+		if (checkSize(intervals, 4, 4, 4)) {
+
+			if ((i0.x1() == i1.x1() - 1 && i1.x1() == i2.x1() - 1)
+					|| (i0.x1() == i1.x1() + 1 && i1.x1() == i2.x1() + 1))
+				return 15;
+		}
+
+		if (checkSize(intervals, 2, 4, 4, 2)) {
+			if ((i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() + 1)
+					|| (i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() - 1))
+				return 15;
+		}
+
+		/**
+		 * Redundant cycles
+		 */
+
+		/*
+		 * I
+		 */
+
+		if (checkSize(intervals, 4, 6, 4)) {
+
+			if (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1)
+				return 12;
+		}
+
+		/*
+		 * II
+		 */
+
+		if (checkSize(intervals, 4, 8, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 16;
+		}
+
+		if (checkSize(intervals, 2, 4, 6, 4)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1))
+				return 17;
+		}
+
+		if (checkSize(intervals, 4, 6, 4, 2)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1))
+				return 18;
+		}
+
+		if (checkSize(intervals, 4, 6, 6, 2)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x2() == i1.x2())
+					|| (i0.x2() == i2.x2() && i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1))
+				return 19;
+		}
+
+		if (checkSize(intervals, 4, 6, 4, 4)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i2.x2() == i1.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i1.x1() + 1))
+				return 20;
+		}
+
+		if (checkSize(intervals, 2, 8, 6)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1))
+				return 21;
+		}
+
+		if (checkSize(intervals, 6, 8, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1) || (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1))
+				return 22;
+		}
+
+		if (checkSize(intervals, 2, 6, 6, 4)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1))
+				return 23;
+		}
+
+		if (checkSize(intervals, 4, 4, 6, 2)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i3.x2() == i2.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i3.x1() == i2.x1() + 1))
+				return 24;
+		}
+
+		/*
+		 * V
+		 */
+
+		if (checkSize(intervals, 4, 10, 4)) {
+
+			if (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 3)
+				return 25;
+		}
+
+		if (checkSize(intervals, 2, 4, 6, 4, 2)) {
+
+			if (i0.x2() == i2.x2() && i1.x2() == i3.x2() && i3.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 3)
+				return 26;
+
+			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i3.x1() == i2.x1() + 1 && i4.x1() == i3.x1() + 3)
+				return 27;
+		}
+
+		if (checkSize(intervals, 4, 6, 4, 2, 2) && Approximation.intervalsOnSameLine(i3, i4)) {
+
+			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i2.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
+				return 28;
+		}
+
+		if (checkSize(intervals, 2, 2, 4, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
+
+			if (i0.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i0.x1() + 1 && i1.x2() == i3.x2())
+				return 29;
+		}
+
+		/*
+		 * VII
+		 */
+
+		if (checkSize(intervals, 4, 10, 6)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 3) || (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 3))
+				return 30;
+
+		}
+
+		if (checkSize(intervals, 6, 10, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 3) || (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 3))
+				return 31;
+		}
+
+		if (checkSize(intervals, 2, 4, 6, 4, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1)
+					|| (i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 1))
+				return 32;
+		}
+
+		if (checkSize(intervals, 2, 4, 6, 6, 2)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i0.x1() + 1 && i1.x1() == i3.x1() && i4.x2() == i2.x2())
+					|| (i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x1() == i2.x1()))
+				return 33;
+		}
+
+		if (checkSize(intervals, 2, 6, 6, 4, 2)) {
+
+			if ((i1.x1() == i3.x1() && i2.x1() == i4.x1() && i1.x1() == i2.x1() + 1 && i0.x1() == i1.x1() + 3)
+					|| (i1.x2() == i3.x2() && i2.x2() == i4.x2() && i1.x2() == i2.x2() - 1 && i0.x2() == i1.x2() - 3))
+				return 34;
+		}
+
+		if (checkSize(intervals, 4, 4, 6, 4, 2)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x1() == i2.x1())
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i2.x1() + 1 && i4.x2() == i2.x2()))
+				return 35;
+		}
+
+		if (checkSize(intervals, 2, 2, 6, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
+
+			if ((i0.x1() == i3.x1() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1 && i1.x2() == i3.x2())
+					|| (i0.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i0.x1() + 1 && i1.x2() == i3.x2()))
+				return 36;
+
+		}
+
+		if (checkSize(intervals, 4, 6, 6, 2, 2) && Approximation.intervalsOnSameLine(i3, i4)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i4.x2() && i2.x2() == i4.x2() - 1 && i3.x1() == i1.x1())
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2()))
+				return 37;
+		}
+
+		if (checkSize(intervals, 2, 4, 8, 6)) {
+			if ((i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 3)
+					|| (i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 3))
+				return 38;
+		}
+
+		if (checkSize(intervals, 6, 8, 4, 2)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 3)
+					|| (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 3))
+				return 39;
+		}
+
+		if (checkSize(intervals, 4, 8, 4, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1)
+					|| (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x1() - 1))
+				return 40;
+		}
+
+		if (checkSize(intervals, 4, 4, 8, 4)) {
+
+			if ((i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i3.x1() - 1)
+					|| (i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i3.x2() == i2.x2() - 1))
+				return 41;
+		}
+
+		/*
+		 * X
+		 */
+
+		if (checkSize(intervals, 6, 10, 6)) {
+
+			if ((i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() - 3)
+					|| (i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() + 3))
+				return 42;
+		}
+
+		if (checkSize(intervals, 4, 4, 6, 4, 4)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x2() == i3.x2() - 1)
+					|| (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1))
+				return 43;
+		}
+
+		if (checkSize(intervals, 2, 6, 6, 6, 2)) {
+
+			if ((i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 3)
+					|| (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1
+							&& i4.x1() == i3.x1() + 3))
+				return 44;
+		}
+
+		if (checkSize(intervals, 2, 2, 8, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
+
+			if (i0.x1() == i3.x1() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1 && i1.x2() == i3.x2())
+				return 45;
+		}
+
+		if (checkSize(intervals, 4, 6, 8, 2, 2) && Approximation.intervalsOnSameLine(i3, i4)) {
+
+			if (i1.x1() == i3.x1() && i2.x1() == i3.x1() - 1 && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
+				return 46;
+		}
+
+		if (checkSize(intervals, 6, 8, 4, 4)) {
+
+			if ((i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1)
+					|| (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1))
+				return 47;
+		}
+
+		if (checkSize(intervals, 4, 4, 8, 6)) {
+
+			if ((i0.x1() == i1.x1() + 1 && i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1)
+					|| (i0.x2() == i1.x2() - 1 && i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1))
+				return 48;
+		}
+
 		return -1;
 	}
 }
-
