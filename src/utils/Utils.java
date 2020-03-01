@@ -127,7 +127,7 @@ public class Utils {
 
 		Approximation.circuitsToSubstract[17][0] = 0;
 		Approximation.circuitsToSubstract[17][1] = 4;
-
+ 
 		Approximation.circuitsToSubstract[18][0] = 0;
 		Approximation.circuitsToSubstract[18][1] = 4;
 
