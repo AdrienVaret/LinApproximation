@@ -2,6 +2,7 @@ package utils;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -428,7 +429,7 @@ public class Utils {
 		
 		if (checkSize(intervals, 2, 4, 6, 4)) {
 			
-			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 2) ||
+			if ((i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1) ||
 				(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1))
 					return 17;
 		}
@@ -804,6 +805,16 @@ public class Utils {
 					return 6;
 		}
 		
+		if (checkSize(intervals, 2, 2, 2, 2)) {
+			
+			if ((i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 1) ||
+				(i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 1) ||
+				(i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1) ||
+				(i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1))
+					return 6;
+			
+		}
+		
 		/*
 		 * 7
 		 */
@@ -935,5 +946,205 @@ public class Utils {
 	   
 	   return -1;
    }
+   
+   public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
+		
+		int n = ((cycle.size() / 2) - 2)/4;
+		
+		if (n == 1)
+			return 0;
+		
+		else if (n == 2)
+			return 1;
+		
+		else {
+			EdgeSet edges = Approximation.computeStraightEdges(molecule, cycle);
+			
+			if (edges.size() == 2) {
+				
+				if (n == 3)
+					return 2;
+				
+				if (n == 4)
+					return 5;
+			}
+			
+			
+			else if (edges.size() == 4) {
+				
+				if (n == 3) {
+					
+					List<Interval> intervals = Approximation.computeIntervals(molecule, cycle, edges);
+					boolean condition = false;
+					
+					for (Interval interval : intervals) {
+						if (interval.size() == 2) {
+							condition = true;
+							break;
+						}
+					}
+					
+					if (condition)
+						return 3;
+					
+					else
+						return 4;
+				
+				}
+				
+				else if (n == 4) {
+					
+					List<Interval> intervals = Approximation.computeIntervals(molecule, cycle, edges);
+					boolean condition = false;
+					
+					for (Interval interval : intervals) {
+						if (interval.size() == 2) {
+							condition = true;
+							break;
+						}
+					}
+					
+					if (condition)
+						return 6;
+					
+					else
+						return 9;
+				}
+			}
+			
+			
+			else if (edges.size() == 6) {
+				
+				List<Interval> intervals = Approximation.computeIntervals(molecule, cycle, edges);
+				
+				List<Interval> intervalsSize2 = new ArrayList<Interval>();
+				List<Interval> intervalsSize4 = new ArrayList<Interval>();
+				List<Interval> intervalsSize6 = new ArrayList<Interval>();
+				
+				for (Interval interval : intervals) {
+					if (interval.size() == 2) intervalsSize2.add(interval);
+					if (interval.size() == 4) intervalsSize4.add(interval);
+					if (interval.size() == 6) intervalsSize6.add(interval);
+				}
+				
+				if (intervalsSize2.size() == 2 && intervalsSize4.size() == 1 && intervalsSize6.size() == 0) {
+					
+					Interval i2_1 = intervalsSize2.get(0);
+					Interval i2_2 = intervalsSize2.get(1);
+					Interval i4 = intervalsSize4.get(0);
+					
+					
+					if (i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) {
+						
+						if (i4.x1() < i2_1.x1() && i4.x2() > i2_1.x2())
+							return 4;
+						
+						if ((i4.x1() < i2_1.x1() && i4.x2() < i2_1.x2()) ||
+							(i4.x1() > i2_1.x1() && i4.x2() > i2_1.x2()))
+							return 7;
+							
+					}
+					
+					else if (i2_1.x1() != i2_2.x1() && i2_1.x1() != i2_2.x2()) {
+						
+						if (i2_1.y1() == i2_2.y1() && i2_1.y2() == i2_2.y2())
+							return 11;
+						
+						if ((i2_1.x1() == i4.x1() || i2_2.x1() == i4.x1()) ||
+							(i2_1.x2() == i4.x2() || i2_2.x2() == i4.x2()))
+							return 11;
+						
+						if ((i4.y1() > Math.min(i2_1.y1(), i2_2.y1()) && i4.y1() < Math.max(i2_1.y1(), i2_2.y1())) &&
+							(i4.y2() > Math.min(i2_1.y2(), i2_2.y2()) && i4.y2() < Math.max(i2_1.y2(), i2_2.y2())))
+							return 13;
+						
+						else 
+							return 6;
+					}
+				}
+				
+				if (intervalsSize2.size() == 1 && intervalsSize4.size() == 1 && intervalsSize6.size() == 1) {
+					return 10;
+				}
+				
+				if (intervalsSize2.size() == 0 && intervalsSize4.size() == 3 && intervalsSize6.size() == 0) {
+					return 10;
+				}
+				
+				if (intervalsSize2.size() == 2 && intervalsSize4.size() == 0 && intervalsSize6.size() == 1) {
+					
+					Interval i2_1 = intervalsSize2.get(0);
+					Interval i2_2 = intervalsSize2.get(1);
+					
+					if (i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) 	
+						return 8;
+					else
+						return 14;
+				}
+				
+				if (intervalsSize2.size() == 1 && intervalsSize4.size() == 2 && intervalsSize6.size() == 0) {
+					
+					Interval i2 = intervalsSize2.get(0);
+					Interval i4_1 = intervalsSize4.get(0);
+					Interval i4_2 = intervalsSize4.get(1);
+					
+					if ((i2.y1() > Math.min(i4_1.y1(), i4_2.y1()) && i2.y1() < Math.max(i4_1.y1(), i4_2.y1())) &&
+						(i2.y2() > Math.min(i4_1.y2(), i4_2.y2()) && i2.y2() < Math.max(i4_1.y2(), i4_2.y2()))) 
+						return 14;
+					
+					
+					else if ((i4_1.x1() == i2.x1() || i4_1.x2() == i2.x2()) ||
+						(i4_2.x1() == i2.x1() || i4_2.x2() == i2.x2()))
+						return 8;
+					
+					else
+						return 9;
+						
+				}
+				
+				if (intervalsSize2.size() == 0 && intervalsSize4.size() == 2 && intervalsSize6.size() == 1)
+					return 12;
+				
+				if (intervalsSize2.size() == 3 && intervalsSize4.size() == 0 && intervalsSize6.size() == 0) {
+					
+					Interval i2_1 = intervalsSize2.get(0);
+					Interval i2_2 = intervalsSize2.get(1);
+					Interval i2_3 = intervalsSize2.get(2);
+					
+					if ((i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) || 
+						(i2_1.x1() == i2_3.x1() && i2_1.x2() == i2_3.x2()) ||
+						(i2_2.x1() == i2_3.x1() && i2_3.x2() == i2_3.x2())) 
+						return 3;
+					
+					else
+						return 2;
+				}
+					
+			}
+			
+			else if (edges.size() == 8) {
+				
+				List<Interval> intervals = Approximation.computeIntervals(molecule, cycle, edges);
+				
+				Interval i2_1 = intervals.get(0);
+				Interval i2_2 = intervals.get(1);
+				Interval i2_3 = intervals.get(2);
+				Interval i2_4 = intervals.get(3);
+				
+				if ((i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) || 
+					(i2_1.x1() == i2_3.x1() && i2_1.x2() == i2_3.x2()) ||
+					(i2_1.x1() == i2_4.x1() && i2_1.x2() == i2_4.x2()) ||
+					(i2_2.x1() == i2_3.x1() && i2_2.x2() == i2_3.x2()) ||
+					(i2_2.x1() == i2_4.x1() && i2_2.x2() == i2_4.x2()) ||
+					(i2_3.x1() == i2_4.x1() && i2_3.x2() == i2_4.x2()))
+					return 13;
+				
+				else
+					return 5;
+			}
+		}
+		
+		return -1;
+	}
 }
 

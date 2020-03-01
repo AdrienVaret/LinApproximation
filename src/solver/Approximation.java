@@ -88,14 +88,14 @@ public class Approximation {
 					
 						Node u1 = molecule.getNodeRef(i);
 						Node u2 = molecule.getNodeRef(j);
-
+/*
 						if (u1.getX() == u2.getX()) {
 							//boolStraightEdges[indexStraightEdges] = model.boolVar("(" + i + "--" + j + ")");
 							boolStraightEdges[indexStraightEdges] = boolEdges[index];
 							model.edgeChanneling(g, boolStraightEdges[indexStraightEdges], i, j).post();
 							indexStraightEdges ++;
 						}
-					
+*/					
 						index ++;
 						
 					}
@@ -106,9 +106,9 @@ public class Approximation {
 			model.cycle(g).post();
 			model.arithm(model.nbNodes(g), "=", size).post();
 			//model.sum(boolEdges, "=", size);
-			model.sum(boolEdges, ">", 0);
-			model.sum(boolStraightEdges, ">=", 6).post();
-			model.sum(boolStraightEdges, "<=", 10).post();
+			//model.sum(boolEdges, ">", 0);
+			//model.sum(boolStraightEdges, ">=", 6).post();
+			//model.sum(boolStraightEdges, "<=", 10).post();
 			
 			model.getSolver().setSearch(new IntStrategy(boolEdges, new FirstFail(model), new IntDomainMin()));
 			Solver solver = model.getSolver();
@@ -493,205 +493,7 @@ public class Approximation {
 	
 	
 	
-public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
-		
-		int n = ((cycle.size() / 2) - 2)/4;
-		
-		if (n == 1)
-			return 0;
-		
-		else if (n == 2)
-			return 1;
-		
-		else {
-			EdgeSet edges = computeStraightEdges(molecule, cycle);
-			
-			if (edges.size() == 2) {
-				
-				if (n == 3)
-					return 2;
-				
-				if (n == 4)
-					return 5;
-			}
-			
-			
-			else if (edges.size() == 4) {
-				
-				if (n == 3) {
-					
-					List<Interval> intervals = computeIntervals(molecule, cycle, edges);
-					boolean condition = false;
-					
-					for (Interval interval : intervals) {
-						if (interval.size() == 2) {
-							condition = true;
-							break;
-						}
-					}
-					
-					if (condition)
-						return 3;
-					
-					else
-						return 4;
-				
-				}
-				
-				else if (n == 4) {
-					
-					List<Interval> intervals = computeIntervals(molecule, cycle, edges);
-					boolean condition = false;
-					
-					for (Interval interval : intervals) {
-						if (interval.size() == 2) {
-							condition = true;
-							break;
-						}
-					}
-					
-					if (condition)
-						return 6;
-					
-					else
-						return 9;
-				}
-			}
-			
-			
-			else if (edges.size() == 6) {
-				
-				List<Interval> intervals = computeIntervals(molecule, cycle, edges);
-				
-				List<Interval> intervalsSize2 = new ArrayList<Interval>();
-				List<Interval> intervalsSize4 = new ArrayList<Interval>();
-				List<Interval> intervalsSize6 = new ArrayList<Interval>();
-				
-				for (Interval interval : intervals) {
-					if (interval.size() == 2) intervalsSize2.add(interval);
-					if (interval.size() == 4) intervalsSize4.add(interval);
-					if (interval.size() == 6) intervalsSize6.add(interval);
-				}
-				
-				if (intervalsSize2.size() == 2 && intervalsSize4.size() == 1 && intervalsSize6.size() == 0) {
-					
-					Interval i2_1 = intervalsSize2.get(0);
-					Interval i2_2 = intervalsSize2.get(1);
-					Interval i4 = intervalsSize4.get(0);
-					
-					
-					if (i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) {
-						
-						if (i4.x1() < i2_1.x1() && i4.x2() > i2_1.x2())
-							return 4;
-						
-						if ((i4.x1() < i2_1.x1() && i4.x2() < i2_1.x2()) ||
-							(i4.x1() > i2_1.x1() && i4.x2() > i2_1.x2()))
-							return 7;
-							
-					}
-					
-					else if (i2_1.x1() != i2_2.x1() && i2_1.x1() != i2_2.x2()) {
-						
-						if (i2_1.y1() == i2_2.y1() && i2_1.y2() == i2_2.y2())
-							return 11;
-						
-						if ((i2_1.x1() == i4.x1() || i2_2.x1() == i4.x1()) ||
-							(i2_1.x2() == i4.x2() || i2_2.x2() == i4.x2()))
-							return 11;
-						
-						if ((i4.y1() > Math.min(i2_1.y1(), i2_2.y1()) && i4.y1() < Math.max(i2_1.y1(), i2_2.y1())) &&
-							(i4.y2() > Math.min(i2_1.y2(), i2_2.y2()) && i4.y2() < Math.max(i2_1.y2(), i2_2.y2())))
-							return 13;
-						
-						else 
-							return 6;
-					}
-				}
-				
-				if (intervalsSize2.size() == 1 && intervalsSize4.size() == 1 && intervalsSize6.size() == 1) {
-					return 10;
-				}
-				
-				if (intervalsSize2.size() == 0 && intervalsSize4.size() == 3 && intervalsSize6.size() == 0) {
-					return 10;
-				}
-				
-				if (intervalsSize2.size() == 2 && intervalsSize4.size() == 0 && intervalsSize6.size() == 1) {
-					
-					Interval i2_1 = intervalsSize2.get(0);
-					Interval i2_2 = intervalsSize2.get(1);
-					
-					if (i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) 	
-						return 8;
-					else
-						return 14;
-				}
-				
-				if (intervalsSize2.size() == 1 && intervalsSize4.size() == 2 && intervalsSize6.size() == 0) {
-					
-					Interval i2 = intervalsSize2.get(0);
-					Interval i4_1 = intervalsSize4.get(0);
-					Interval i4_2 = intervalsSize4.get(1);
-					
-					if ((i2.y1() > Math.min(i4_1.y1(), i4_2.y1()) && i2.y1() < Math.max(i4_1.y1(), i4_2.y1())) &&
-						(i2.y2() > Math.min(i4_1.y2(), i4_2.y2()) && i2.y2() < Math.max(i4_1.y2(), i4_2.y2()))) 
-						return 14;
-					
-					
-					else if ((i4_1.x1() == i2.x1() || i4_1.x2() == i2.x2()) ||
-						(i4_2.x1() == i2.x1() || i4_2.x2() == i2.x2()))
-						return 8;
-					
-					else
-						return 9;
-						
-				}
-				
-				if (intervalsSize2.size() == 0 && intervalsSize4.size() == 2 && intervalsSize6.size() == 1)
-					return 12;
-				
-				if (intervalsSize2.size() == 3 && intervalsSize4.size() == 0 && intervalsSize6.size() == 0) {
-					
-					Interval i2_1 = intervalsSize2.get(0);
-					Interval i2_2 = intervalsSize2.get(1);
-					Interval i2_3 = intervalsSize2.get(2);
-					
-					if ((i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) || 
-						(i2_1.x1() == i2_3.x1() && i2_1.x2() == i2_3.x2()) ||
-						(i2_2.x1() == i2_3.x1() && i2_3.x2() == i2_3.x2())) 
-						return 3;
-					
-					else
-						return 2;
-				}
-					
-			}
-			
-			else if (edges.size() == 8) {
-				
-				List<Interval> intervals = computeIntervals(molecule, cycle, edges);
-				
-				Interval i2_1 = intervals.get(0);
-				Interval i2_2 = intervals.get(1);
-				Interval i2_3 = intervals.get(2);
-				Interval i2_4 = intervals.get(3);
-				
-				if ((i2_1.x1() == i2_2.x1() && i2_1.x2() == i2_2.x2()) || 
-					(i2_1.x1() == i2_3.x1() && i2_1.x2() == i2_3.x2()) ||
-					(i2_1.x1() == i2_4.x1() && i2_1.x2() == i2_4.x2()) ||
-					(i2_2.x1() == i2_3.x1() && i2_2.x2() == i2_3.x2()) ||
-					(i2_2.x1() == i2_4.x1() && i2_2.x2() == i2_4.x2()) ||
-					(i2_3.x1() == i2_4.x1() && i2_3.x2() == i2_4.x2()))
-					return 13;
-				
-				else
-					return 5;
-			}
-		}
-		
-		return -1;
-	}
+
 	
 	public static String displayCycle(ArrayList<Integer> cycle) {
 		ArrayList<Integer> list = new ArrayList<Integer>();
@@ -725,20 +527,16 @@ public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
 			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, edges);
 			Collections.sort(intervals);
 			
-			int cycleConfiguration = getCycleIndex(molecule, cycle);
+			int cycleConfigurationOLD = Utils.getCycleIndex(molecule, cycle);
 			
-			int cycleConfigurationNew = Utils.identifyMinimalCycle(molecule, cycle, intervals);
+			int cycleConfiguration = Utils.identifyMinimalCycle(molecule, cycle, intervals);
 			
+			if (cycleConfigurationOLD != -1)
+				oldMethod.get(cycleConfigurationOLD).add(cycle);
 			if (cycleConfiguration != -1)
-				oldMethod.get(cycleConfiguration).add(cycle);
+				newMethod.get(cycleConfiguration).add(cycle);
 			
-			if (cycleConfigurationNew != -1)
-				newMethod.get(cycleConfigurationNew).add(cycle);
-			
-			if (cycleConfigurationNew != -1) {
-			
-			//if (cyclesConfigurations[cycleConfiguration] != -1) {	
-			//if (cycleConfiguration != -1) {
+			if (cycleConfiguration != -1) {
 				
 				SubMolecule subMolecule = substractCycle(molecule, cycle);
 				int nbPerfectMatching = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
@@ -749,14 +547,18 @@ public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
 		}
 
 		List<ArrayList<Integer>> redundantCycles = computeRedundantCycles(molecule);
+
+		List<ArrayList<ArrayList<Integer>>> redCycles = new ArrayList<ArrayList<ArrayList<Integer>>>();
 		
-		int index = 0;
+		for (int i = 0 ; i <= 48 ; i++) 
+			redCycles.add(new ArrayList<ArrayList<Integer>>());
 		
-		BufferedWriter w = new BufferedWriter(new FileWriter(new File("unknown_circuits")));
-		
-		int cptCor = 0;
+		BufferedWriter w = new BufferedWriter(new FileWriter(new File("red_circuits")));
 		
 		for (ArrayList<Integer> cycle : redundantCycles){
+			
+			if (displayCycle(cycle).equals("[14, 18, 21, 23, 25, 26, 27, 30, 32, 33, 35, 37, 40, 42, 43, 44, 47, 48, 49, 50, 52, 53]"))
+				System.out.print("");
 			
 			EdgeSet edges = computeStraightEdges(molecule, cycle);
 			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, edges);
@@ -764,10 +566,10 @@ public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
 			
 			int configuration = Utils.identifyCircuit(molecule, cycle, intervals);
 			
-			if (configuration == 12)
-				cptCor ++;
-			
 			if (configuration != -1) {
+				
+				redCycles.get(configuration).add(cycle);
+				
 				int [] toSubstract = circuitsToSubstract[configuration];
 				
 				SubMolecule subMolecule = substractCycleAndInterior(molecule, cycle, intervals);
@@ -775,21 +577,17 @@ public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
 				
 				circuits[2] -= (toSubstract[0] * nbPerfectMatchings);
 				circuits[3] -= (toSubstract[1] * nbPerfectMatchings);
+				
+				w.write("(" + configuration + ") : " + displayCycle(cycle) + " : " + nbPerfectMatchings + " matchings." + "\n");
 			}
-			
-			else {
-				w.write(displayCycle(cycle) + "\n");
-			}
-			
-			index ++;
 		}
 
 		String l0 = "";
 		String l1 = "";
 		String l2 = "";
 		
+		System.out.println("Minimal cycles comparaisons");
 		
-		System.out.println(cptCor + " coronenes");
 		for (int i = 0 ; i < 16 ; i++) {
 			l0 += i + "\t";
 			l1 += oldMethod.get(i).size() + "\t";
@@ -800,12 +598,26 @@ public static int getCycleIndex(UndirGraph molecule, ArrayList<Integer> cycle) {
 		System.out.println(l1);
 		System.out.println(l2);
 		
+		System.out.println("---------------------");
+		
+		String l3 = "";
+		String l4 = "";
+		
+		for (int i = 0 ; i <= 48 ; i++) {
+			l3 += i + "\t";
+			l4 += redCycles.get(i).size() + "\t";
+		}
+		
+		System.out.println(l3);
+		System.out.println(l4);
+		
 		w.close();
 		
 		for (int i = 0 ; i < circuits.length ; i++){
 			System.out.print(circuits[i] + " ");
 		}
 		System.out.println("");
+		
 	}
 	
 	public static void displayTime() {
