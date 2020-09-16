@@ -1060,6 +1060,122 @@ public class Utils {
 			if (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 3)
 				return 110;
 		}
+		
+		/*
+		 * 40
+		 */
+		
+		if (checkSize(intervals, 4, 8, 4, 4)) {
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1)
+				return 111;
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1)
+				return 112;
+		}
+		
+		/*
+		 * 41
+		 */
+		
+		if (checkSize(intervals, 4, 4, 8, 4)) {
+			
+			if (i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i2.x1() == i3.x1() - 1)
+				return 113;
+			
+			if (i1.x2() == i3.x2() && i0.x2() == i1.x2() - 1 && i2.x2() == i3.x2() + 1)
+				return 114;
+		}
+		
+		/*
+		 * 42
+		 */
+		
+		if (checkSize(intervals, 6, 10, 6)) {
+			
+			if (i0.x2() == i1.x2() - 1 && i2.x2() == i1.x2() - 3)
+				return 115;
+			
+			if (i0.x1() == i1.x1() + 1 && i2.x1() == i1.x1() + 3)
+				return 116;
+		}
+		
+		/*
+		 * 43
+		 */
+		
+		if (checkSize(intervals, 4, 4, 6, 4, 4)) {
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x2() == i3.x2() - 1)
+				return 117;
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x1() == i3.x1() + 1)
+				return 118;
+		}
+		
+		/*
+		 * 44
+		 */
+		
+		if (checkSize(intervals, 2, 6, 6, 6, 2)) {
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i3.x2() == i2.x2() - 1 && i4.x2() == i3.x2() - 3)
+				return 119;
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i3.x1() == i2.x1() + 1 && i4.x1() == i3.x1() + 3)
+				return 120;
+		}
+		
+		/*
+		 * 45
+		 */
+		
+		if (checkSize(intervals, 2, 2, 8, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
+			
+			if (i0.x1() == i3.x1() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1 && i1.x2() == i3.x2())
+				return 121;
+		}
+		
+		/*
+		 * 46
+		 */
+		
+		if (checkSize(intervals, 4, 6, 8, 2, 2) && Approximation.intervalsOnSameLine(i3, i4)) {
+			
+			if (i1.x1() == i3.x1() && i2.x1() == i3.x1() - 1 && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
+				return 122;
+		}
+		
+		/*
+		 * 47
+		 */
+		
+		if (checkSize(intervals, 6, 8, 4, 4)) {
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 1)
+				return 123;
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 1)
+				return 124;
+		}
+		
+		/*
+		 * 48
+		 */
+		
+		if (checkSize(intervals, 4, 4, 8, 6)) {
+			
+			if (i0.x1() == i1.x1() + 1 && i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1)
+				return 125;
+			
+			if (i0.x2() == i1.x2() - 1 && i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1)
+				return 125;
+		}
+		
+		/*
+		 * Default
+		 */
+		
 		return -1;
 	}
 	
