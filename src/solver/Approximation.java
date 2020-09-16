@@ -37,7 +37,7 @@ public class Approximation {
 	public static int [] cyclesConfigurations = new int [] {2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1};
 	
 	public static boolean isMinimalCycle(int configuration) {
-		if (configuration <= 15)
+		if (configuration <= 10)
 			return true;
 		return false;
 	}

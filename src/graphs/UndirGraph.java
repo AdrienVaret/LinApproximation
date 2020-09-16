@@ -8,6 +8,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import utils.Interval;
 import utils.RelativeMatrix;
 
 public class UndirGraph {
@@ -22,7 +23,8 @@ public class UndirGraph {
 	private Node [] nodesRefs;
 	private RelativeMatrix coords;
 	private int [][] hexagons;
-
+	private int [][] dualGraph;
+	
 	private ArrayList<ArrayList<Integer>> hexagonsVertices;
 
 	/**
@@ -45,6 +47,8 @@ public class UndirGraph {
 		
 		hexagons = new int[nbHexagons][6];
 		initHexagons();
+		
+		computeDualGraph();
 	}
 	
 	public UndirGraph(int nbNodes, int nbEdges, int nbHexagons, ArrayList<ArrayList<Integer>> edgeMatrix,
@@ -79,6 +83,8 @@ public class UndirGraph {
 				}
 			}
 		}
+		
+		computeDualGraph();
 	}
 	
 	/**
@@ -146,6 +152,57 @@ public class UndirGraph {
 	 * Class's methods
 	 */
 	
+private void computeDualGraph() {
+		
+		dualGraph = new int [nbHexagons][6];
+	
+		for (int i = 0 ; i < nbHexagons ; i++)
+			for (int j = 0 ; j < 6 ; j++)
+				dualGraph[i][j] = -1;
+		
+		ArrayList<Integer> candidats = new ArrayList<Integer>();
+		candidats.add(0);
+		
+		int index = 0;
+		
+		while (index < nbHexagons) {
+		
+			int candidat = candidats.get(index);
+			int [] candidatHexagon = hexagons[candidat];
+			
+			for (int i = 0 ; i < candidatHexagon.length ; i++) {
+				
+				int u = candidatHexagon[i];
+				int v = candidatHexagon[(i+1) % 6];
+				
+				System.out.print("");
+				
+				for (int j = 0 ; j < nbHexagons ; j++) {
+					if (j != candidat) { //j != i avant
+						
+						int contains = 0;
+						for (int k = 0 ; k < 6 ; k++) {
+							if (hexagons[j][k] == u || hexagons[j][k] == v)
+								contains ++;
+						}
+						
+						if (contains == 2) {
+							
+							dualGraph[candidat][i] = j;
+							
+							if (!candidats.contains(j))
+								candidats.add(j);
+							
+							break;
+						}
+					}
+				}
+				
+			}
+			index ++;
+		}
+	}
+	
 	public void exportToGraphviz(String outputFileName) {
 		//COMPIL: dot -Kfdp -n -Tpng -o test.png test
 		try {
@@ -179,6 +236,52 @@ public class UndirGraph {
 	
 	public RelativeMatrix getNodesMem() {
 		return nodesMem;
+	}
+	
+	private int findHexagon(int u, int v) {
+
+		for (int i = 0 ; i < nbHexagons ; i++) {
+			int [] hexagon = hexagons[i];
+			
+			if (hexagon[4] == u && hexagon[5] == v)
+				return i;
+		}
+		
+		return -1;
+		
+	}
+	
+	private ArrayList<Integer> findHexagons(int hexagon, Interval interval) {
+		
+		ArrayList<Integer> hexagons = new ArrayList<Integer>();
+		int size = interval.size() / 2;
+		
+		hexagons.add(hexagon);
+		
+		int newHexagon = hexagon;
+		
+		for (int i = 0 ; i < size ; i++) {
+			
+			newHexagon = dualGraph[newHexagon][1];
+			hexagons.add(newHexagon);
+		}
+		
+		return hexagons;
+		
+	}
+	
+	public ArrayList<Integer> getAllHexagonsOfIntervals(ArrayList<Interval> intervals) {
+		
+		
+		ArrayList<Integer> hexagons = new ArrayList<Integer>();
+		
+		for (Interval interval : intervals) {
+			
+			int hexagon = findHexagon(interval.x1(), interval.y1());
+			hexagons.addAll(findHexagons(hexagon, interval));
+		}
+		
+		return hexagons;
 	}
 	
 	public void initHexagons() {
