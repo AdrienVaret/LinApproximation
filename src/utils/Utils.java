@@ -970,6 +970,96 @@ public class Utils {
 				return 96;
 		}
 		
+		/*
+		 * 33
+		 */
+		
+		if (checkSize(intervals, 2, 4, 6, 6, 2)) {
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i0.x1() + 1 && i4.x2() == i2.x2())
+				return 97;
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i0.x2() - 1 && i4.x1() == i2.x1())
+				return 98;
+		}
+		
+		/*
+		 * 34
+		 */
+		
+		if (checkSize(intervals, 2, 6, 6, 4, 2)) {
+			
+			if (i1.x1() == i3.x1() && i2.x1() == i4.x1() && i1.x1() == i2.x1() + 1 && i0.x1() == i1.x1() + 3)
+				return 99;
+			
+			if (i1.x2() == i3.x2() && i2.x2() == i4.x2() && i1.x2() == i2.x2() - 1 && i0.x2() == i1.x2() - 3)
+				return 100;
+		}
+		
+		/*
+		 * 35
+		 */
+		
+		if (checkSize(intervals, 4, 4, 6, 4, 2)) {
+			
+			if(i0.x2() == i2.x2() && i1.x2() == i3.x2() && i1.x2() == i2.x2() - 1 && i4.x1() == i2.x1())
+				return 101;
+			
+			if(i0.x1() == i2.x1() && i1.x1() == i3.x1() && i1.x1() == i2.x1() + 1 && i4.x2() == i2.x2())
+				return 102;
+		}
+		
+		/*
+		 * 36
+		 */
+		
+		if (checkSize(intervals, 2, 2, 6, 6, 4) && Approximation.intervalsOnSameLine(i0, i1)) {
+			
+			if (i0.x1() == i3.x1() && i2.x1() == i0.x1() - 1 && i4.x1() == i3.x1() + 1 && i1.x2() == i3.x2())
+				return 103;
+			
+			if (i0.x1() == i3.x1() && i2.x1() == i4.x1() && i2.x1() == i0.x1() + 1 && i1.x2() == i3.x2())
+				return 104;
+		}
+		
+		/*
+		 * 37
+		 */
+		
+		if (checkSize(intervals, 4, 6, 6, 2, 2) && Approximation.intervalsOnSameLine(i3, i4)) {
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i4.x2() && i2.x2() == i4.x2() - 1 && i3.x1() == i1.x1())
+				return 105;
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
+				return 106;
+		}
+		
+		/*
+		 * 38
+		 */
+		
+		if (checkSize(intervals, 2, 4, 8, 6)) {
+			
+			if (i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1 && i0.x2() == i1.x2() - 3)
+				return 107;
+			
+			if (i1.x1() == i3.x1() && i2.x1() == i1.x1() - 1 && i0.x1() == i1.x1() + 3)
+				return 108;
+		}
+		
+		/*
+		 * 39
+		 */
+		
+		if (checkSize(intervals, 6, 8, 4, 2)) {
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i2.x2() + 1 && i3.x2() == i2.x2() - 3)
+				return 109;
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i2.x1() - 1 && i3.x1() == i2.x1() + 3)
+				return 110;
+		}
 		return -1;
 	}
 	
