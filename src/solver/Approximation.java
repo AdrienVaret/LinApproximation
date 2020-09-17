@@ -36,6 +36,8 @@ public class Approximation {
 	public static int [][] circuitsToSubstract;
 	public static int [] cyclesConfigurations = new int [] {2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1};
 	
+	public static int [][][] energies = new int[127][11][4];
+	
 	public static boolean isMinimalCycle(int configuration) {
 		if (configuration <= 10)
 			return true;

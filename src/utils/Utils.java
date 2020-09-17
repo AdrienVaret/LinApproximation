@@ -1,6 +1,12 @@
 package utils;
 
 import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import graphs.Node;
@@ -2262,5 +2268,348 @@ public class Utils {
 		}
 
 		return -1;
+	}
+	
+	public static void readFileEnergy() throws IOException{
+		
+		String filename = "energy_circuits.txt";
+		
+		BufferedReader r = new BufferedReader(new FileReader(new File(filename)));
+		BufferedWriter w = new BufferedWriter(new FileWriter(new File("matrix_init.txt")));
+		String line;
+		
+		w.write("int [][][] energies = new int[127][11][4];" + "\n\n");
+		
+		int id = -1;
+		
+		while ((line = r.readLine()) != null) {
+			String [] splittedLine = line.split(" ");
+			
+			if (line.equals("")) {
+				System.out.println("\n");
+				w.write("\n");
+			}
+			
+			else if (splittedLine.length == 1) {
+				System.out.println(line + " ");
+				id = Integer.parseInt(line);
+			}
+			
+			else {
+				
+				int hexagon = Integer.parseInt(splittedLine[0]);
+				int [] R = new int [4];
+				
+				R[0] = Integer.parseInt(splittedLine[2]);
+				R[1] = Integer.parseInt(splittedLine[3]);
+				R[2] = Integer.parseInt(splittedLine[4]);
+				R[3] = Integer.parseInt(splittedLine[5]);
+				
+				System.out.print("h_" + hexagon + " += ");
+				
+				for (int i = 0 ; i < R.length ; i++) {
+					
+					if (R[i] != 0) {
+						
+						if (R[i] < 0)
+							System.out.print(R[i]);
+						else
+							System.out.print("+" + R[i]);
+						
+						System.out.print("R_" + (i+1) + " ");
+						w.write("energies[" + id + "][" + hexagon + "][" + i + "] = " + R[i] + ";" + "\n");
+					}
+				}
+				
+				System.out.println("");	
+			}
+		}
+		
+		w.close();
+		r.close();
+	}
+	
+	public static int [][][] initEnergies() {
+		
+		int [][][] energies = new int[127][11][4];
+
+		energies[0][0][0] = 1;
+
+		energies[1][0][1] = 1;
+		energies[1][1][1] = 1;
+
+		energies[2][0][1] = 1;
+		energies[2][1][1] = 1;
+
+		energies[3][0][1] = 1;
+		energies[3][1][1] = 1;
+
+		energies[4][0][2] = 1;
+		energies[4][2][2] = 1;
+
+		energies[5][0][2] = 1;
+		energies[5][2][2] = 1;
+
+		energies[6][0][2] = 1;
+		energies[6][2][2] = 1;
+
+		energies[7][1][2] = 1;
+
+		energies[8][1][2] = 1;
+
+		energies[9][1][2] = 1;
+
+		energies[10][1][2] = 1;
+
+		energies[11][1][2] = 1;
+
+		energies[12][1][2] = 1;
+
+		energies[13][0][2] = 1;
+		energies[13][3][2] = 1;
+
+		energies[14][2][2] = 1;
+		energies[14][1][2] = 1;
+
+		energies[15][2][2] = 1;
+		energies[15][1][2] = 1;
+
+		energies[16][0][3] = 1;
+		energies[16][3][3] = 1;
+
+		energies[17][0][3] = 1;
+		energies[17][3][3] = 1;
+
+		energies[18][0][3] = 1;
+		energies[18][3][3] = 1;
+
+		energies[19][3][3] = 1;
+
+		energies[20][1][3] = 1;
+
+		energies[21][2][3] = 1;
+
+		energies[22][0][3] = 1;
+
+		energies[23][2][3] = 1;
+
+		energies[24][2][3] = 1;
+
+		energies[25][1][3] = 1;
+
+		energies[26][1][3] = 1;
+
+		energies[27][1][3] = 1;
+
+		energies[28][0][3] = 1;
+
+		energies[29][3][3] = 1;
+
+		energies[30][2][3] = 1;
+
+		energies[31][1][3] = 1;
+
+		energies[32][1][3] = 1;
+
+		energies[33][3][3] = 1;
+
+		energies[34][2][3] = 1;
+
+		energies[35][1][3] = 1;
+
+		energies[36][2][3] = 1;
+
+		energies[37][2][3] = 1;
+
+		energies[38][2][3] = 1;
+
+		energies[39][4][3] = 1;
+
+		energies[40][2][3] = 1;
+
+		energies[41][2][3] = 1;
+
+		energies[42][0][3] = 1;
+
+		energies[43][2][3] = 1;
+
+		energies[44][3][3] = 1;
+
+		energies[45][1][3] = 1;
+
+		energies[46][2][3] = 1;
+
+		energies[47][4][3] = 1;
+
+		energies[48][3][3] = 1;
+
+		energies[49][0][3] = 1;
+
+		energies[50][1][3] = 1;
+
+		energies[51][3][3] = 1;
+
+		energies[52][2][3] = 1;
+
+		energies[53][2][3] = 1;
+
+		energies[54][2][3] = 1;
+
+		energies[55][3][3] = 1;
+
+		energies[56][3][3] = 1;
+
+		energies[57][3][2] = -3;
+		energies[57][3][3] = -13;
+
+		energies[58][0][3] = 1;
+		energies[58][5][3] = 1;
+
+		energies[59][2][3] = 1;
+		energies[59][3][3] = 1;
+
+		energies[60][1][3] = 1;
+		energies[60][4][3] = 1;
+
+		energies[61][0][3] = 1;
+		energies[61][5][3] = 1;
+
+		energies[62][1][3] = 1;
+		energies[62][4][3] = 1;
+
+		energies[63][2][3] = 1;
+		energies[63][3][3] = 1;
+
+		energies[64][3][3] = -4;
+
+		energies[65][4][3] = -4;
+
+		energies[66][4][3] = -4;
+
+		energies[67][4][3] = -4;
+
+		energies[68][3][3] = -4;
+
+		energies[69][3][3] = -4;
+
+		energies[70][3][3] = -1;
+
+		energies[71][3][3] = -1;
+
+		energies[72][3][3] = -1;
+
+		energies[73][3][3] = -1;
+
+		energies[74][3][3] = -1;
+
+		energies[75][4][3] = -1;
+
+		energies[76][4][3] = -1;
+
+		energies[77][5][3] = -1;
+
+		energies[78][5][3] = -1;
+
+		energies[79][5][3] = -1;
+
+		energies[80][5][3] = -1;
+
+		energies[81][5][3] = -1;
+
+		energies[82][4][3] = -2;
+
+		energies[83][4][3] = -2;
+
+		energies[84][4][3] = -2;
+
+		energies[85][3][3] = -1;
+
+		energies[86][5][3] = -1;
+
+		energies[87][4][3] = -1;
+
+		energies[88][5][3] = -1;
+
+		energies[89][3][3] = -1;
+
+		energies[90][4][3] = -1;
+
+		energies[91][4][3] = -1;
+
+		energies[92][4][3] = -1;
+
+		energies[93][5][3] = -1;
+
+		energies[94][5][3] = -1;
+
+		energies[95][4][3] = -1;
+
+		energies[96][4][3] = -1;
+
+		energies[97][4][3] = -1;
+
+		energies[98][4][3] = -1;
+
+		energies[99][5][3] = -1;
+
+		energies[100][5][3] = -1;
+
+		energies[101][5][3] = -1;
+
+		energies[102][5][3] = -1;
+
+		energies[103][6][3] = -1;
+
+		energies[104][6][3] = -1;
+
+		energies[105][3][3] = -1;
+
+		energies[106][3][3] = -1;
+
+		energies[107][5][3] = -1;
+
+		energies[108][4][3] = -1;
+
+		energies[109][5][3] = -1;
+
+		energies[110][4][3] = -1;
+
+		energies[111][3][3] = -1;
+
+		energies[112][4][3] = -1;
+
+		energies[113][5][3] = -1;
+
+		energies[114][6][3] = -1;
+
+		energies[115][5][3] = -1;
+
+		energies[116][5][3] = -1;
+
+		energies[117][5][3] = -1;
+
+		energies[118][5][3] = -1;
+
+		energies[119][5][3] = -1;
+
+		energies[120][5][3] = -1;
+
+		energies[121][7][3] = -1;
+
+		energies[122][3][3] = -1;
+
+		energies[123][4][3] = -1;
+
+		energies[124][5][3] = -1;
+
+		energies[125][5][3] = -1;
+
+		energies[126][6][3] = -1;
+
+		return energies;
+	}
+	
+	public static void main(String[] args) throws IOException {
+		initEnergies();
 	}
 }
