@@ -163,7 +163,7 @@ public class Approximation {
 
 		int [] firstVertices = new int [molecule.getNbEdges()];
 		int [] secondVertices = new int [molecule.getNbEdges()];
-
+		
 		for (int n = 4 ; n <= 6 ; n++) {
 
 			GraphModel model = new GraphModel("Cycles");
@@ -201,20 +201,35 @@ public class Approximation {
 				}
 			}
 		
-			model.cycle(g).post();
-			model.arithm(model.nbNodes(g), "=", size).post();
+			//model.cycle(g).post();
+			
+			//IntVar [] t = model.nodeSetBool(g);
+			
+			model.minDegrees(g, 2).post();
+			model.maxDegrees(g, 2).post();
+			model.connected(g).post();
+			
+			//model.arithm(model.nbNodes(g), "=", size).post();
+			model.sum(boolEdges, "=", size).post();
+			//model.sum(t, "=", size).post();
+			
+			//IntVar vSize = model.intVar(size);
+			//model.nbNodes(g, vSize).post();
+			
+			model.or(model.arithm(model.nbNodes(g), "=", size), model.arithm(model.nbNodes(g), "=", 0)).post();
 			
 			model.getSolver().setSearch(new IntStrategy(boolEdges, new FirstFail(model), new IntDomainMin()));
+			//model.getSolver().setSearch(new IntStrategy(t, new FirstFail(model), new IntDomainMin()));
 			Solver solver = model.getSolver();
 
 			Solution solution;
 			
-			try {
+			
+			
 				while(solver.solve()){
-					//Solution solution = new Solution(model);
 					solution = new Solution(model);
 					solution.record();
-
+					
 					ArrayList<Integer> cycle = new ArrayList<Integer>();
 
 					for (int i = 0 ; i < boolEdges.length ; i++) {
@@ -225,12 +240,9 @@ public class Approximation {
 					}
 
 					cycles.add(cycle);
+					
 				}
-			} catch (SolverException e) {
-				e.printStackTrace();
-			}
 		}
-
 		return cycles;
 	}
 
@@ -530,8 +542,6 @@ public class Approximation {
 	public static List<Integer> getHexagons(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals){
 		List<Integer> hexagons = new ArrayList<Integer>();
 
-
-
 		for (Interval interval : intervals){
 
 			int [] hexagonsCount = new int [molecule.getNbHexagons()];
@@ -567,7 +577,97 @@ public class Approximation {
 		return list.toString();
 	}
 
-	public static void computeEnergy(UndirGraph molecule) throws IOException {
+	public static void computeLocalEnergy(UndirGraph molecule) throws IOException {
+		
+		energies = Utils.initEnergies();
+		int [][] circuits = new int[molecule.getNbHexagons()][MAX_CYCLE_SIZE];
+		
+		int [] circuitCount = new int[energies.length];
+		
+		List<ArrayList<Integer>> minimalCycles = computeCycles(molecule);
+		
+		int test = 0;
+		
+		for (ArrayList<Integer> minimalCycle : minimalCycles) {
+			
+			if (Utils.displayCycle(minimalCycle).equals("[6, 11, 14, 10, 12, 15, 13, 16, 18, 25]"))
+				System.out.print("");
+			
+			EdgeSet verticalEdges = computeStraightEdges(molecule, minimalCycle);
+			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, minimalCycle, verticalEdges);
+			Collections.sort(intervals);
+			int cycleConfiguration = Utils.identifyCircuitV2(molecule, minimalCycle, intervals);
+			
+			if (cycleConfiguration == 2) 
+				System.out.print("");
+			
+			if (cycleConfiguration != -1 && cycleConfiguration <= 63 && cycleConfiguration != 57) {
+				
+				circuitCount[cycleConfiguration] ++;
+				
+				ArrayList<Integer> hexagons = (ArrayList<Integer>) getHexagons(molecule, minimalCycle, intervals);
+				SubMolecule subMolecule = substractCycle(molecule, minimalCycle);
+				int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
+				
+				int [][] energiesCycle = energies[cycleConfiguration];
+				
+				for (int idHexagon = 0 ; idHexagon < hexagons.size() ; idHexagon++) {
+					
+					int hexagon = hexagons.get(idHexagon);
+					for (int size = 0 ; size < 4 ; size ++) {
+						
+						circuits[hexagon][size] += energiesCycle[idHexagon][size] * nbPerfectMatchings;
+					}
+				}
+			}
+		}
+		
+		List<ArrayList<Integer>> redundantCircuits = computeRedundantCycles(molecule);
+		
+		for (ArrayList<Integer> redundantCircuit : redundantCircuits) {
+			
+			EdgeSet verticalEdges = computeStraightEdges(molecule, redundantCircuit);
+			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, redundantCircuit, verticalEdges);
+			Collections.sort(intervals);
+			int cycleConfiguration = Utils.identifyCircuitV2(molecule, redundantCircuit, intervals);
+			
+			if (cycleConfiguration != -1 && (cycleConfiguration == 57 || cycleConfiguration > 63)) {
+				
+				circuitCount[cycleConfiguration] ++;
+				
+				ArrayList<Integer> hexagons = (ArrayList<Integer>) getHexagons(molecule, redundantCircuit, intervals);
+				SubMolecule subMolecule = substractCycle(molecule, redundantCircuit);
+				int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
+				
+				int [][] energiesCycle = energies[cycleConfiguration];
+				
+				for (int idHexagon = 0 ; idHexagon < hexagons.size() ; idHexagon++) {
+					
+					int hexagon = hexagons.get(idHexagon);
+					for (int size = 0 ; size < 4 ; size ++) {
+						
+						circuits[hexagon][size] += energiesCycle[idHexagon][size] * nbPerfectMatchings;
+					}
+				}
+				
+			}
+		}
+		
+		String l1 = "";
+		String l2 = "";
+		for (int i = 0 ; i < circuitCount.length ; i++) {
+			
+			l1 += i + "\t";
+			l2 += circuitCount[i] + "\t";
+			
+		}
+		
+		System.out.println(l1);
+		System.out.println(l2);
+		
+	}
+	
+	public static void computeGlobalEnergy(UndirGraph molecule) throws IOException {
 		
 		int [] cyclesConfigurations = new int [] {2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1};
 		int [] circuits = new int [MAX_CYCLE_SIZE];
@@ -583,6 +683,9 @@ public class Approximation {
 			Collections.sort(intervals);
 			
 			int cycleConfiguration = Utils.identifyMinimalCycle(molecule, cycle, intervals);
+			
+			if (cycleConfiguration == 2)
+				System.out.print("");
 			
 			if (cycleConfiguration != -1) {
 				
@@ -637,7 +740,8 @@ public class Approximation {
 		
 		UndirGraph molecule = GraphParser.parseUndirectedGraph(path, pathNoCoords);
 
-		computeEnergy(molecule);
+		//computeGlobalEnergy(molecule);
+		computeLocalEnergy(molecule);
 		//computeAllCycles(molecule);
 	}
 }

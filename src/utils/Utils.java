@@ -676,7 +676,7 @@ public class Utils {
 		 * 10
 		 */
 		
-		if (checkSize(intervals, 2, 2, 2)) {
+		if (checkSize(intervals, 4, 4, 4)) {
 			
 			if (i0.x2() == i2.x2() && i1.x2() == i0.x2() - 1)
 				return 51;
@@ -1175,7 +1175,7 @@ public class Utils {
 				return 125;
 			
 			if (i0.x2() == i1.x2() - 1 && i1.x2() == i3.x2() && i2.x2() == i1.x2() + 1)
-				return 125;
+				return 126;
 		}
 		
 		/*
@@ -2607,6 +2607,17 @@ public class Utils {
 		energies[126][6][3] = -1;
 
 		return energies;
+	}
+	
+	public static String displayCycle(ArrayList<Integer> cycles) {
+		
+		ArrayList<Integer> l = new ArrayList<Integer>();
+		
+		for (Integer i : cycles)
+			if (!l.contains(i))
+				l.add(i);
+		
+		return l.toString();
 	}
 	
 	public static void main(String[] args) throws IOException {
