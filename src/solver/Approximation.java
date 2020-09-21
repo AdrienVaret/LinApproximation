@@ -44,117 +44,83 @@ public class Approximation {
 		return false;
 	}
 	
-	public static void computeAllCycles(UndirGraph molecule) {
+	public static ArrayList<ArrayList<Integer>> computeAllCycles(UndirGraph molecule) {
 		
-		Utils.initSubstractTable();
-		
-		int [] circuits = new int [MAX_CYCLE_SIZE];
-		
+		ArrayList<ArrayList<Integer>> cycles = new ArrayList<>();
+
 		int [] firstVertices = new int [molecule.getNbEdges()];
 		int [] secondVertices = new int [molecule.getNbEdges()];
 		
-		for (int n = 1 ; n <= 6 ; n++) {
-			
-			int size = 4 * n + 2;
-			
-			GraphModel model = new GraphModel("Cycles");
-			
-			UndirectedGraph GLB = new UndirectedGraph(model, molecule.getNbNodes(), SetType.BITSET, false);
-			UndirectedGraph GUB = new UndirectedGraph(model, molecule.getNbNodes(), SetType.BITSET, false);
+		GraphModel model = new GraphModel("Cycles");
 
-			for (int i = 0; i < molecule.getNbNodes(); i++) {
-				GUB.addNode(i);
+		UndirectedGraph GLB = new UndirectedGraph(model, molecule.getNbNodes(), SetType.BITSET, false);
+		UndirectedGraph GUB = new UndirectedGraph(model, molecule.getNbNodes(), SetType.BITSET, false);
 
-				for (int j = (i + 1); j < molecule.getNbNodes(); j++) {
-					if (molecule.getAdjacencyMatrix()[i][j] == 1) {
-						GUB.addEdge(i, j);
-					}
+		for (int i = 0; i < molecule.getNbNodes(); i++) {
+			GUB.addNode(i);
+
+			for (int j = (i + 1); j < molecule.getNbNodes(); j++) {
+				if (molecule.getAdjacencyMatrix()[i][j] == 1) {
+					GUB.addEdge(i, j);
 				}
 			}
-			
-			UndirectedGraphVar g = model.graphVar("g", GLB, GUB);
-			BoolVar[] boolEdges = new BoolVar[molecule.getNbEdges()];
-			
-			int index = 0;
-			for (int i = 0 ; i < molecule.getNbNodes() ; i++) {
-				for (int j = (i+1) ; j < molecule.getNbNodes() ; j++) {
+		}
 
-					if (molecule.getAdjacencyMatrix()[i][j] == 1) {
-						boolEdges[index] = model.boolVar("(" + i + "--" + j + ")");
-						model.edgeChanneling(g, boolEdges[index], i, j).post();
-						firstVertices[index] = i;
-						secondVertices[index] = j;
-						index ++;
-					}
+		UndirectedGraphVar g = model.graphVar("g", GLB, GUB);
+
+		BoolVar[] boolEdges = new BoolVar[molecule.getNbEdges()];
+			
+		int index = 0;
+		for (int i = 0 ; i < molecule.getNbNodes() ; i++) {
+			for (int j = (i+1) ; j < molecule.getNbNodes() ; j++) {
+
+				if (molecule.getAdjacencyMatrix()[i][j] == 1) {
+					boolEdges[index] = model.boolVar("(" + i + "--" + j + ")");
+					model.edgeChanneling(g, boolEdges[index], i, j).post();
+					firstVertices[index] = i;
+					secondVertices[index] = j;
+					index ++;
 				}
 			}
+		}
+			
+		model.minDegrees(g, 2).post();
+		model.maxDegrees(g, 2).post();
+		model.connected(g).post();
+			
 		
-			model.cycle(g).post();
-			model.arithm(model.nbNodes(g), "=", size).post();
+		model.or(
+			model.and(model.arithm(model.nbNodes(g), "=", 6), model.sum(boolEdges, "=", 6)),
+			model.and(model.arithm(model.nbNodes(g), "=", 10), model.sum(boolEdges, "=", 10)),
+			model.and(model.arithm(model.nbNodes(g), "=", 14), model.sum(boolEdges, "=", 14)),
+			model.and(model.arithm(model.nbNodes(g), "=", 18), model.sum(boolEdges, "=", 18)),
+			model.and(model.arithm(model.nbNodes(g), "=", 22), model.sum(boolEdges, "=", 22)),
+			model.and(model.arithm(model.nbNodes(g), "=", 26), model.sum(boolEdges, "=", 26))
+		).post();
 			
-			model.getSolver().setSearch(new IntStrategy(boolEdges, new FirstFail(model), new IntDomainMin()));
-			Solver solver = model.getSolver();
+		model.getSolver().setSearch(new IntStrategy(boolEdges, new FirstFail(model), new IntDomainMin()));
+		Solver solver = model.getSolver();
 
-			Solution solution;
+		Solution solution;
 			
-			try {
-				
-				while (solver.solve()) {
-					solution = new Solution(model);
-					solution.record();
+		while(solver.solve()){
+			solution = new Solution(model);
+			solution.record();
+					
+			ArrayList<Integer> cycle = new ArrayList<Integer>();
 
-					/*
-					 * Building cycle
-					 */
-					
-					ArrayList<Integer> cycle = new ArrayList<Integer>();
-
-					for (int i = 0 ; i < boolEdges.length ; i++) {
-						if (solution.getIntVal(boolEdges[i]) == 1) {
-							cycle.add(firstVertices[i]);
-							cycle.add(secondVertices[i]);
-						}
-					}
-					
-					EdgeSet edges = computeStraightEdges(molecule, cycle);
-					ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, edges);
-					Collections.sort(intervals);
-					
-					int configuration = Utils.identifyCycle(molecule, cycle, intervals);
-					
-					/*
-					 * Computing conjugated circuits
-					 */
-					
-					if (configuration != -1) {
-					
-						SubMolecule subMolecule = substractCycle(molecule, cycle);
-						int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
-					
-						if (isMinimalCycle(configuration) && n <= MAX_CYCLE_SIZE) {
-						
-							int ri = ((cycle.size() / 2) - 2)/4;
-							circuits[ri - 1] += (nbPerfectMatchings * cyclesConfigurations[configuration]);
-						
-						} else {
-							
-							int [] toSubstract = circuitsToSubstract[configuration];
-							circuits[2] -= (toSubstract[0] * nbPerfectMatchings);
-							circuits[3] -= (toSubstract[1] * nbPerfectMatchings);
-						}
-					}
+			for (int i = 0 ; i < boolEdges.length ; i++) {
+				if (solution.getIntVal(boolEdges[i]) == 1) {
+					cycle.add(firstVertices[i]);
+					cycle.add(secondVertices[i]);
 				}
-
-			} catch (SolverException e) {
-				e.printStackTrace();
 			}
-			
+
+			cycles.add(cycle);
+					
 		}
 		
-		for (int i = 0 ; i < MAX_CYCLE_SIZE ; i++) {
-			System.out.print(circuits[i] + " ");
-		}
-		System.out.println("");
+		return cycles;	
 	}
 	
 	public static List<ArrayList<Integer>> computeRedundantCycles(UndirGraph molecule){
@@ -200,26 +166,17 @@ public class Approximation {
 					}
 				}
 			}
-		
-			//model.cycle(g).post();
-			
-			//IntVar [] t = model.nodeSetBool(g);
 			
 			model.minDegrees(g, 2).post();
 			model.maxDegrees(g, 2).post();
 			model.connected(g).post();
 			
-			//model.arithm(model.nbNodes(g), "=", size).post();
 			model.sum(boolEdges, "=", size).post();
-			//model.sum(t, "=", size).post();
+			model.arithm(model.nbNodes(g), "=", size).post();
 			
-			//IntVar vSize = model.intVar(size);
-			//model.nbNodes(g, vSize).post();
-			
-			model.or(model.arithm(model.nbNodes(g), "=", size), model.arithm(model.nbNodes(g), "=", 0)).post();
+			//model.or(model.arithm(model.nbNodes(g), "=", size), model.arithm(model.nbNodes(g), "=", 0)).post();
 			
 			model.getSolver().setSearch(new IntStrategy(boolEdges, new FirstFail(model), new IntDomainMin()));
-			//model.getSolver().setSearch(new IntStrategy(t, new FirstFail(model), new IntDomainMin()));
 			Solver solver = model.getSolver();
 
 			Solution solution;
@@ -577,6 +534,56 @@ public class Approximation {
 		return list.toString();
 	}
 
+	public static void test(UndirGraph molecule) throws IOException{
+		
+		energies = Utils.initEnergies();
+		int [][] circuits = new int[molecule.getNbHexagons()][MAX_CYCLE_SIZE];		
+		int [] circuitCount = new int[energies.length];
+		
+		List<ArrayList<Integer>> cycles = computeAllCycles(molecule);
+		
+		for (ArrayList<Integer> cycle : cycles) {
+			
+			EdgeSet verticalEdges = computeStraightEdges(molecule, cycle);
+			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, verticalEdges);
+			Collections.sort(intervals);
+			int cycleConfiguration = Utils.identifyCircuitV2(molecule, cycle, intervals);
+			
+			if (cycleConfiguration != -1) {
+				
+				circuitCount[cycleConfiguration] ++;
+				
+				ArrayList<Integer> hexagons = (ArrayList<Integer>) getHexagons(molecule, cycle, intervals);
+				SubMolecule subMolecule = substractCycle(molecule, cycle);
+				int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
+				
+				int [][] energiesCycle = energies[cycleConfiguration];
+				
+				for (int idHexagon = 0 ; idHexagon < hexagons.size() ; idHexagon++) {
+					
+					int hexagon = hexagons.get(idHexagon);
+					for (int size = 0 ; size < 4 ; size ++) {
+						
+						circuits[hexagon][size] += energiesCycle[idHexagon][size] * nbPerfectMatchings;
+					}
+				}
+				
+			}
+		}
+		
+		String l1 = "";
+		String l2 = "";
+		for (int i = 0 ; i < circuitCount.length ; i++) {
+			
+			l1 += i + "\t";
+			l2 += circuitCount[i] + "\t";
+			
+		}
+		
+		System.out.println(l1);
+		System.out.println(l2);
+	}
+	
 	public static void computeLocalEnergy(UndirGraph molecule) throws IOException {
 		
 		energies = Utils.initEnergies();
@@ -585,8 +592,6 @@ public class Approximation {
 		int [] circuitCount = new int[energies.length];
 		
 		List<ArrayList<Integer>> minimalCycles = computeCycles(molecule);
-		
-		int test = 0;
 		
 		for (ArrayList<Integer> minimalCycle : minimalCycles) {
 			
@@ -741,7 +746,8 @@ public class Approximation {
 		UndirGraph molecule = GraphParser.parseUndirectedGraph(path, pathNoCoords);
 
 		//computeGlobalEnergy(molecule);
-		computeLocalEnergy(molecule);
-		//computeAllCycles(molecule);
+		//computeLocalEnergy(molecule);
+
+		test(molecule);
 	}
 }
