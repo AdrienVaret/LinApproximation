@@ -587,61 +587,27 @@ public class Approximation {
 	public static void computeLocalEnergy(UndirGraph molecule) throws IOException {
 		
 		energies = Utils.initEnergies();
-		int [][] circuits = new int[molecule.getNbHexagons()][MAX_CYCLE_SIZE];
-		
+		int [][] circuits = new int[molecule.getNbHexagons()][MAX_CYCLE_SIZE];		
 		int [] circuitCount = new int[energies.length];
 		
-		List<ArrayList<Integer>> minimalCycles = computeCycles(molecule);
+		List<ArrayList<Integer>> cycles = computeAllCycles(molecule);
 		
-		for (ArrayList<Integer> minimalCycle : minimalCycles) {
+		for (ArrayList<Integer> cycle : cycles) {
 			
-			if (Utils.displayCycle(minimalCycle).equals("[6, 11, 14, 10, 12, 15, 13, 16, 18, 25]"))
-				System.out.print("");
-			
-			EdgeSet verticalEdges = computeStraightEdges(molecule, minimalCycle);
-			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, minimalCycle, verticalEdges);
+			EdgeSet verticalEdges = computeStraightEdges(molecule, cycle);
+			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, verticalEdges);
 			Collections.sort(intervals);
-			int cycleConfiguration = Utils.identifyCircuitV2(molecule, minimalCycle, intervals);
+			int cycleConfiguration = Utils.identifyCircuitV2(molecule, cycle, intervals);
 			
-			if (cycleConfiguration == 2) 
-				System.out.print("");
-			
-			if (cycleConfiguration != -1 && cycleConfiguration <= 63 && cycleConfiguration != 57) {
+			if (cycleConfiguration != -1) {
+				
+				if (cycleConfiguration == 7)
+					System.out.print("");
 				
 				circuitCount[cycleConfiguration] ++;
 				
-				ArrayList<Integer> hexagons = (ArrayList<Integer>) getHexagons(molecule, minimalCycle, intervals);
-				SubMolecule subMolecule = substractCycle(molecule, minimalCycle);
-				int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
-				
-				int [][] energiesCycle = energies[cycleConfiguration];
-				
-				for (int idHexagon = 0 ; idHexagon < hexagons.size() ; idHexagon++) {
-					
-					int hexagon = hexagons.get(idHexagon);
-					for (int size = 0 ; size < 4 ; size ++) {
-						
-						circuits[hexagon][size] += energiesCycle[idHexagon][size] * nbPerfectMatchings;
-					}
-				}
-			}
-		}
-		
-		List<ArrayList<Integer>> redundantCircuits = computeRedundantCycles(molecule);
-		
-		for (ArrayList<Integer> redundantCircuit : redundantCircuits) {
-			
-			EdgeSet verticalEdges = computeStraightEdges(molecule, redundantCircuit);
-			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, redundantCircuit, verticalEdges);
-			Collections.sort(intervals);
-			int cycleConfiguration = Utils.identifyCircuitV2(molecule, redundantCircuit, intervals);
-			
-			if (cycleConfiguration != -1 && (cycleConfiguration == 57 || cycleConfiguration > 63)) {
-				
-				circuitCount[cycleConfiguration] ++;
-				
-				ArrayList<Integer> hexagons = (ArrayList<Integer>) getHexagons(molecule, redundantCircuit, intervals);
-				SubMolecule subMolecule = substractCycle(molecule, redundantCircuit);
+				ArrayList<Integer> hexagons = (ArrayList<Integer>) getHexagons(molecule, cycle, intervals);
+				SubMolecule subMolecule = substractCycleAndInterior(molecule, cycle, intervals);
 				int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
 				
 				int [][] energiesCycle = energies[cycleConfiguration];
@@ -670,6 +636,29 @@ public class Approximation {
 		System.out.println(l1);
 		System.out.println(l2);
 		
+		System.out.println("");
+		System.out.println("LOCAL ENERGY");
+		
+		int [] globalEnergy = new int[MAX_CYCLE_SIZE];
+		
+		for (int i = 0 ; i < circuits.length ; i++) {
+			System.out.print("H" + i + " : ");
+			
+			for (int j = 0 ; j < MAX_CYCLE_SIZE ; j++) {
+				
+				System.out.print(circuits[i][j] + " ");
+				globalEnergy[j] += circuits[i][j];
+			}
+			
+			System.out.println("");
+		}
+		
+		System.out.println("");
+		System.out.print("GLOBAL ENERGY : ");
+		
+		for (int i = 0 ; i < globalEnergy.length ; i++)
+			System.out.print(globalEnergy[i] + " ");
+		System.out.println("");
 	}
 	
 	public static void computeGlobalEnergy(UndirGraph molecule) throws IOException {
@@ -743,11 +732,17 @@ public class Approximation {
 		String path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph_coord";
 		String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph";
 		
+		//String path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/2_crowns.graph_coord";
+		//String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/2_crowns.graph";
+		
 		UndirGraph molecule = GraphParser.parseUndirectedGraph(path, pathNoCoords);
 
 		//computeGlobalEnergy(molecule);
-		//computeLocalEnergy(molecule);
-
-		test(molecule);
+		
+		long begin = System.currentTimeMillis();
+		computeLocalEnergy(molecule);
+		long end = System.currentTimeMillis();
+		long time = end - begin;
+		System.out.println("time : " + time + " ms.");
 	}
 }

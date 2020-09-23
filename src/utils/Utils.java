@@ -1179,6 +1179,45 @@ public class Utils {
 		}
 		
 		/*
+		 * 49
+		 */
+		
+		if (checkSize(intervals, 4, 10, 4)) {
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1)
+				return 127;
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1)
+				return 128;
+		}
+		
+		/*
+		 * 50
+		 */
+		
+		if (checkSize(intervals, 2, 2, 4, 6, 4)) {
+			
+			if (i2.x1() == i4.x1() && i3.x1() == i2.x1() - 1 && i1.x2() == i3.x2() && i0.x2() == i1.x2() + 1)
+				return 129;
+			
+			if (i2.x1() == i4.x1() && i3.x1() == i2.x1() - 1 && i1.x1() == i3.x1() && i0.x1() == i1.x1() - 1)
+				return 130;
+		}
+		
+		/*
+		 * 51
+		 */
+		
+		if (checkSize(intervals, 4, 6, 4, 2, 2)) {
+			
+			if (i0.x1() == i2.x1() && i1.x1() == i0.x1() - 1 && i1.x1() == i3.x1() && i4.x1() == i3.x1() - 1)
+				return 131;
+			
+			if (i0.x2() == i2.x2() && i1.x2() == i0.x2() + 1 && i1.x2() == i3.x2() && i4.x2() == i3.x2() + 1)
+				return 132;
+		}
+		
+		/*
 		 * Default
 		 */
 		
@@ -2331,9 +2370,9 @@ public class Utils {
 	
 	public static int [][][] initEnergies() {
 		
-		int [][][] energies = new int[127][11][4];
+		int [][][] energies = new int[133][11][4];
 
-		energies[0][0][0] = 1;
+		energies[0][0][0] = 2;
 
 		energies[1][0][1] = 1;
 		energies[1][1][1] = 1;
@@ -2355,9 +2394,9 @@ public class Utils {
 
 		energies[7][1][2] = 1;
 
-		energies[8][1][2] = 1;
+		energies[8][0][2] = 1;
 
-		energies[9][1][2] = 1;
+		energies[9][2][2] = 1;
 
 		energies[10][1][2] = 1;
 
@@ -2605,7 +2644,19 @@ public class Utils {
 		energies[125][5][3] = -1;
 
 		energies[126][6][3] = -1;
-
+		
+		energies[127][3][3] = -1;
+		
+		energies[128][5][3] = -1;
+		
+		energies[129][5][3] = -1;
+		
+		energies[130][5][3] = -1;
+		
+		energies[131][3][3] = -1;
+		
+		energies[132][3][3] = -1;
+		
 		return energies;
 	}
 	
@@ -2621,6 +2672,18 @@ public class Utils {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		initEnergies();
+		
+		BufferedReader r = new BufferedReader(new FileReader(new File("/Users/adrien/Desktop/resultats.txt")));
+		String line;
+		
+		ArrayList<String> lines = new ArrayList<String>();
+		
+		while ((line = r.readLine()) != null) {
+			lines.add(line);
+		}
+		
+		r.close();
+		
+		System.out.println(lines.get(0).equals(lines.get(1)));	
 	}
 }
