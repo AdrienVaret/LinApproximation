@@ -1036,7 +1036,7 @@ public class Utils {
 			
 			if (i0.x2() == i2.x2() && i1.x2() == i4.x2() && i2.x2() == i4.x2() - 1 && i3.x1() == i1.x1())
 				return 105;
-			
+			 
 			if (i0.x1() == i2.x1() && i1.x1() == i3.x1() && i0.x1() == i1.x1() + 1 && i4.x2() == i1.x2())
 				return 106;
 		}
@@ -2448,7 +2448,7 @@ public class Utils {
 
 		energies[31][1][3] = 1;
 
-		energies[32][1][3] = 1;
+		energies[32][2][3] = 1;
 
 		energies[33][3][3] = 1;
 

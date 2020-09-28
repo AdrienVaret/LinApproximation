@@ -594,15 +594,17 @@ public class Approximation {
 		
 		for (ArrayList<Integer> cycle : cycles) {
 			
+			
+			
 			EdgeSet verticalEdges = computeStraightEdges(molecule, cycle);
 			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, verticalEdges);
 			Collections.sort(intervals);
 			int cycleConfiguration = Utils.identifyCircuitV2(molecule, cycle, intervals);
 			
+			if (cycle.contains(22) && cycle.contains(24) && cycle.contains(34) && cycle.contains(32) && cycleConfiguration != -1)
+				System.out.print("");
+			
 			if (cycleConfiguration != -1) {
-				
-				if (cycleConfiguration == 7)
-					System.out.print("");
 				
 				circuitCount[cycleConfiguration] ++;
 				
@@ -617,7 +619,8 @@ public class Approximation {
 					int hexagon = hexagons.get(idHexagon);
 					for (int size = 0 ; size < 4 ; size ++) {
 						
-						circuits[hexagon][size] += energiesCycle[idHexagon][size] * nbPerfectMatchings;
+						if (energiesCycle[idHexagon][size] != 0)
+							circuits[hexagon][size] += energiesCycle[idHexagon][size] * nbPerfectMatchings;
 					}
 				}
 				
@@ -731,9 +734,6 @@ public class Approximation {
 	public static void main(String[] args) throws IOException {
 		String path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph_coord";
 		String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph";
-		
-		//String path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/2_crowns.graph_coord";
-		//String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/2_crowns.graph";
 		
 		UndirGraph molecule = GraphParser.parseUndirectedGraph(path, pathNoCoords);
 
