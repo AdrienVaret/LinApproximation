@@ -363,60 +363,11 @@ public class Approximation {
 		return list.toString();
 	}
 
-	public static void test(UndirGraph molecule) throws IOException{
+	public static void treatCycle(UndirGraph molecule, ArrayList<Integer> cycle) {
 		
-		energies = Utils.initEnergies();
-		int [][] circuits = new int[molecule.getNbHexagons()][MAX_CYCLE_SIZE];		
-		int [] circuitCount = new int[energies.length];
-		
-		List<ArrayList<Integer>> cycles = computeAllCycles(molecule);
-		
-		for (ArrayList<Integer> cycle : cycles) {
-			
-			EdgeSet verticalEdges = computeStraightEdges(molecule, cycle);
-			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, verticalEdges);
-			Collections.sort(intervals);
-			int cycleConfiguration = Utils.identifyCycle(molecule, cycle, intervals);
-			
-			if (cycleConfiguration != -1) {
-				
-				circuitCount[cycleConfiguration] ++;
-				
-				ArrayList<Integer> hexagons = (ArrayList<Integer>) getHexagons(molecule, cycle, intervals);
-				SubMolecule subMolecule = substractCycle(molecule, cycle);
-				int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
-				
-				int [][] energiesCycle = energies[cycleConfiguration];
-				
-				for (int idHexagon = 0 ; idHexagon < hexagons.size() ; idHexagon++) {
-					
-					int hexagon = hexagons.get(idHexagon);
-					for (int size = 0 ; size < 4 ; size ++) {
-						
-						circuits[hexagon][size] += energiesCycle[idHexagon][size] * nbPerfectMatchings;
-					}
-				}
-				
-			}
-		}
-		
-		String l1 = "";
-		String l2 = "";
-		for (int i = 0 ; i < circuitCount.length ; i++) {
-			
-			l1 += i + "\t";
-			l2 += circuitCount[i] + "\t";
-			
-		}
-		
-		System.out.println(l1);
-		System.out.println(l2);
 	}
 	
 	public static void computeLocalEnergy(UndirGraph molecule) throws IOException {
-		
-		BufferedWriter unknownCircuits = new BufferedWriter(new FileWriter(new File("unknown_circuits.txt")));
-		ArrayList<ArrayList<Integer>> unknown = new ArrayList<ArrayList<Integer>>();
 		
 		energies = Utils.initEnergies();
 		int [][] circuits = new int[molecule.getNbHexagons()][MAX_CYCLE_SIZE];		
@@ -467,49 +418,8 @@ public class Approximation {
 					}
 				}
 				
-			} else { //cycleConfiguration == -1 (DEBUG)
-				
-				int size = cycle.size() / 2;
-				
-				int i6 = 0, i4 = 0;
-				
-				for (Interval interval : intervals) {
-					
-					if (interval.size() == 6)
-						i6++;
-					
-					if (interval.size() == 4)
-						i4++;
-				}
-				
-				if (/*size == 18 ||*/ (size == 22 || size == 26) && (i6 >= 1 && i4 >= 2) ) {
-					
-					ArrayList<Integer> hexagons = (ArrayList<Integer>) getHexagons(molecule, cycle, intervals);
-					Collections.sort(hexagons);
-					
-					if (hexagons.contains(3)) {
-						
-						if (!unknown.contains(hexagons)) {
-							unknownCircuits.write(hexagons.toString() + "\n");
-							unknown.add(hexagons);
-						}
-					}
-					
-				}
-			}
+			} 
 		}
-		
-		String l1 = "";
-		String l2 = "";
-		for (int i = 0 ; i < circuitCount.length ; i++) {
-			
-			l1 += i + "\t";
-			l2 += circuitCount[i] + "\t";
-			
-		}
-		
-		System.out.println(l1);
-		System.out.println(l2);
 		
 		System.out.println("");
 		System.out.println("LOCAL ENERGY");
@@ -534,8 +444,7 @@ public class Approximation {
 		for (int i = 0 ; i < globalEnergy.length ; i++)
 			System.out.print(globalEnergy[i] + " ");
 		System.out.println("");
-		
-		unknownCircuits.close();
+
 	}
 	
 	public static void displayTime() {
@@ -550,8 +459,6 @@ public class Approximation {
 		String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph";
 		
 		UndirGraph molecule = GraphParser.parseUndirectedGraph(path, pathNoCoords);
-
-		//computeGlobalEnergy(molecule);
 		
 		long begin = System.currentTimeMillis();
 		computeLocalEnergy(molecule);
