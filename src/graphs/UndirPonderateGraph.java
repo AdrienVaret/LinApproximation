@@ -257,7 +257,7 @@ private int nbNodes, nbEdges, nbHexagons;
 						//tmp[uIndex][vIndex] = 1;
 						//tmp[vIndex][uIndex] = 1;
 						tmp[Utils.t[uIndex]][Utils.t[vIndex]] = 1;
-						tmp[Utils.t[vIndex]][Utils.t[uIndex]] = 1;
+						tmp[Utils.t[vIndex]][Utils.t[uIndex]] = 1; 
 					}
 				}
 			}

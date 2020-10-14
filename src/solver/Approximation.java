@@ -2,7 +2,6 @@ package solver;
 
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.exception.SolverException;
 import org.chocosolver.solver.variables.*;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -34,17 +33,7 @@ public class Approximation {
 	private static final int MAX_CYCLE_SIZE = 4;
 	private static long computeCyclesTime;
 	
-	
-	public static int [][] circuitsToSubstract;
-	public static int [] cyclesConfigurations = new int [] {2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1};
-	
 	public static int [][][] energies = new int[127][11][4];
-	
-	public static boolean isMinimalCycle(int configuration) {
-		if (configuration <= 10)
-			return true;
-		return false;
-	}
 	
 	public static ArrayList<ArrayList<Integer>> computeAllCycles(UndirGraph molecule) {
 		
@@ -549,7 +538,7 @@ public class Approximation {
 			EdgeSet verticalEdges = computeStraightEdges(molecule, cycle);
 			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, verticalEdges);
 			Collections.sort(intervals);
-			int cycleConfiguration = Utils.identifyCircuitV2(molecule, cycle, intervals);
+			int cycleConfiguration = Utils.identifyCycle(molecule, cycle, intervals);
 			
 			if (cycleConfiguration != -1) {
 				
@@ -602,7 +591,7 @@ public class Approximation {
 			EdgeSet verticalEdges = computeStraightEdges(molecule, cycle);
 			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, verticalEdges);
 			Collections.sort(intervals);
-			int cycleConfiguration = Utils.identifyCircuitV2(molecule, cycle, intervals);
+			int cycleConfiguration = Utils.identifyCycle(molecule, cycle, intervals);
 			
 			if (cycleConfiguration != -1) {
 				
@@ -709,69 +698,6 @@ public class Approximation {
 		System.out.println("");
 		
 		unknownCircuits.close();
-	}
-	
-	public static void computeGlobalEnergy(UndirGraph molecule) throws IOException {
-		
-		int [] cyclesConfigurations = new int [] {2, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1};
-		int [] circuits = new int [MAX_CYCLE_SIZE];
-		
-		Utils.initSubstractTable();
-		
-		List<ArrayList<Integer>> cycles = computeCycles(molecule);
-		
-		for (ArrayList<Integer> cycle : cycles) {
-			
-			EdgeSet edges = computeStraightEdges(molecule, cycle);
-			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, edges);
-			Collections.sort(intervals);
-			
-			int cycleConfiguration = Utils.identifyMinimalCycle(molecule, cycle, intervals);
-			
-			if (cycleConfiguration == 2)
-				System.out.print("");
-			
-			if (cycleConfiguration != -1) {
-				
-				SubMolecule subMolecule = substractCycle(molecule, cycle);
-				int nbPerfectMatching = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
-				int size = ((cycle.size() / 2) - 2)/4;
-				circuits[size - 1] += (nbPerfectMatching * cyclesConfigurations[cycleConfiguration]);
-			}
-		}
- 
-		List<ArrayList<Integer>> redundantCycles = computeRedundantCycles(molecule);
-		
-		BufferedWriter w = new BufferedWriter(new FileWriter(new File("red_circuits")));
-		
-		for (ArrayList<Integer> cycle : redundantCycles){
-			
-			EdgeSet edges = computeStraightEdges(molecule, cycle);
-			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, edges);
-			Collections.sort(intervals);
-			
-			int configuration = Utils.identifyCircuit(molecule, cycle, intervals);
-			
-			if (configuration != -1) {
-				int [] toSubstract = circuitsToSubstract[configuration];
-				
-				SubMolecule subMolecule = substractCycleAndInterior(molecule, cycle, intervals);
-				int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
-				
-				circuits[2] -= (toSubstract[0] * nbPerfectMatchings);
-				circuits[3] -= (toSubstract[1] * nbPerfectMatchings);
-				
-				w.write("(" + configuration + ") : " + displayCycle(cycle) + " : " + nbPerfectMatchings + " matchings." + "\n");
-			}
-		}
-
-		w.close();
-		
-		for (int i = 0 ; i < circuits.length ; i++){
-			System.out.print(circuits[i] + " ");
-		}
-		System.out.println("");
-		
 	}
 	
 	public static void displayTime() {
