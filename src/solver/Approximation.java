@@ -739,7 +739,7 @@ public class Approximation {
 				circuits[size - 1] += (nbPerfectMatching * cyclesConfigurations[cycleConfiguration]);
 			}
 		}
-
+ 
 		List<ArrayList<Integer>> redundantCycles = computeRedundantCycles(molecule);
 		
 		BufferedWriter w = new BufferedWriter(new FileWriter(new File("red_circuits")));
