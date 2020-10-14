@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import graphs.Node;
 import graphs.UndirGraph;
@@ -2499,7 +2501,7 @@ public class Utils {
 		energies[56][3][3] = 1;
 
 		energies[57][3][2] = -3;
-		energies[57][3][3] = -13;
+		energies[57][3][3] = -13;//-13 avant, à voir
 
 		energies[58][0][3] = 1;
 		energies[58][5][3] = 1;
@@ -2519,17 +2521,19 @@ public class Utils {
 		energies[63][2][3] = 1;
 		energies[63][3][3] = 1;
 
-		energies[64][3][3] = -4;
+		// 64 - 69 : -4 avant
+		
+		energies[64][3][3] = -5;
 
-		energies[65][4][3] = -4;
+		energies[65][4][3] = -5;
 
-		energies[66][4][3] = -4;
+		energies[66][4][3] = -5;
 
-		energies[67][4][3] = -4;
+		energies[67][4][3] = -5;
 
-		energies[68][3][3] = -4;
+		energies[68][3][3] = -5;
 
-		energies[69][3][3] = -4;
+		energies[69][3][3] = -5;
 
 		energies[70][3][3] = -1;
 
@@ -2673,17 +2677,23 @@ public class Utils {
 	
 	public static void main(String[] args) throws IOException {
 		
-		BufferedReader r = new BufferedReader(new FileReader(new File("/Users/adrien/Desktop/resultats.txt")));
+		BufferedReader r = new BufferedReader(new FileReader(new File("logs.txt")));
 		String line;
 		
 		ArrayList<String> lines = new ArrayList<String>();
+		int somme = 0;
 		
 		while ((line = r.readLine()) != null) {
-			lines.add(line);
+			String mult = line.split(Pattern.quote(" : "))[1];
+			String [] splitMult = mult.split(Pattern.quote(" * "));
+			int a = Integer.parseInt(splitMult[0]);
+			int b = Integer.parseInt(splitMult[1]);
+			
+			somme += (a * b);
 		}
 		
 		r.close();
 		
-		System.out.println(lines.get(0).equals(lines.get(1)));	
+		System.out.println(somme);
 	}
 }
