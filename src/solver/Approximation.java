@@ -15,6 +15,7 @@ import org.chocosolver.graphsolver.variables.UndirectedGraphVar;
 import org.chocosolver.util.objects.graphs.UndirectedGraph;
 import org.chocosolver.util.objects.setDataStructures.SetType;
 import graphs.Node;
+import graphs.NodeSameLine;
 import graphs.UndirGraph;
 import parser.GraphParser;
 import perfect_matching.PerfectMatchingSolver;
@@ -266,7 +267,8 @@ public class Approximation {
 				int y1 = Math.min(u1.getY(), v1.getY());
 				int y2 = Math.max(u1.getY(), v1.getY());
 				
-				List<Integer> sameLineNodes = new ArrayList<Integer>();
+				//List<Integer> sameLineNodes = new ArrayList<Integer>();
+				List<NodeSameLine> sameLineNodes = new ArrayList<NodeSameLine>();
 				
 				for (int j = (i+1) ; j < edges.size() ; j++) {
 					if (edgesOK[j] == 0) {
@@ -278,18 +280,45 @@ public class Approximation {
 						
 						if (y1 == y3 && y2 == y4) {
 							edgesOK[j] = 1;
-							sameLineNodes.add(j);
+							//sameLineNodes.add(j);
+							sameLineNodes.add(new NodeSameLine(j, u2.getX()));
 						}
 					}
 				}
 				
-				if (sameLineNodes.size() == 1) {
-					intervals.add(new Interval(edges.getFirstVertices().get(i), edges.getSecondVertices().get(i), 
-								edges.getFirstVertices().get(sameLineNodes.get(0)), edges.getSecondVertices().get(sameLineNodes.get(0))));
+				/**/
+				sameLineNodes.add(new NodeSameLine(i, u1.getX()));
+				Collections.sort(sameLineNodes);
+				
+				//if (sameLineNodes.size() == 1) {
+				if (sameLineNodes.size() == 2) {
+					//intervals.add(new Interval(edges.getFirstVertices().get(i), edges.getSecondVertices().get(i), 
+					//			edges.getFirstVertices().get(sameLineNodes.get(0)), edges.getSecondVertices().get(sameLineNodes.get(0))));
+				
+					Node n1 = edges.getFirstVertices().get(sameLineNodes.get(0).getIndex());
+					Node n2 = edges.getSecondVertices().get(sameLineNodes.get(0).getIndex());
+					Node n3 = edges.getFirstVertices().get(sameLineNodes.get(1).getIndex());
+					Node n4 = edges.getSecondVertices().get(sameLineNodes.get(1).getIndex());
+					
+					intervals.add(new Interval(n1, n2, n3, n4));
 				}
 				
 				else {
 					
+					for (int j = 0 ; j < sameLineNodes.size() ; j += 2) {
+						
+						NodeSameLine nsl1 = sameLineNodes.get(j);
+						NodeSameLine nsl2 = sameLineNodes.get(j+1);
+						
+						Node n1 = edges.getFirstVertices().get(nsl1.getIndex());
+						Node n2 = edges.getSecondVertices().get(nsl1.getIndex());
+						Node n3 = edges.getFirstVertices().get(nsl2.getIndex());
+						Node n4 = edges.getSecondVertices().get(nsl2.getIndex());
+						
+						intervals.add(new Interval(n1, n2, n3, n4));
+					}
+					
+/*
 					int minIndex1 = i;
 					int minIndex2 = -1;
 					
@@ -332,6 +361,8 @@ public class Approximation {
 							                          edges.getFirstVertices().get(index2), edges.getSecondVertices().get(index2));
 					
 					intervals.add(interval2);
+					
+*/
 					
 				}
 			}
@@ -533,11 +564,6 @@ public class Approximation {
 				int nbPerfectMatchings = PerfectMatchingSolver.computeNbPerfectMatching(subMolecule);
 				
 				int [][] energiesCycle = energies[cycleConfiguration];
-				
-				ArrayList<Integer> hexagonsSorted = new ArrayList<Integer>();
-				for (Integer h : hexagons)
-					hexagonsSorted.add(h);
-				Collections.sort(hexagonsSorted);
 				
 				for (int idHexagon = 0 ; idHexagon < hexagons.size() ; idHexagon++) {
 					
