@@ -249,7 +249,7 @@ public class KekuleStructureGenerator {
 		
 		w = new BufferedWriter(new FileWriter(new File("kekule_structures"), true));
 		
-		UndirGraph molecule = GraphParser.parseUndirectedGraph(filename, filenameNoCoords);
+		UndirGraph molecule = GraphParser.parseUndirectedGraph(filename, filenameNoCoords, true);
 		
 		int nbStructuresSumConstraints = computeKekuleStructuresSumConstraints(molecule);
 		int nbStructuresAllDiffConstraint = computeKekuleStructuresAllDiffConstraint(molecule);

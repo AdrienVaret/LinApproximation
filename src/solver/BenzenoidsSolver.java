@@ -70,7 +70,7 @@ public class BenzenoidsSolver {
     
     public static void generateLewisStructures(String path, boolean allSolutions) throws IOException {
 
-        UndirGraph graph = GraphParser.parseUndirectedGraph(path, pathNoCoords);
+        UndirGraph graph = GraphParser.parseUndirectedGraph(path, pathNoCoords, true);
         Model model = new Model("Lewis Structures");
 
         graph.exportToGraphviz("graph_output");

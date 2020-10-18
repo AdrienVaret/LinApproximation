@@ -222,7 +222,7 @@ public class GraphParser {
 		return null;
 	}
 	
-	public static UndirGraph parseUndirectedGraph(String inputFileName, String fileWithNoCoords) {
+	public static UndirGraph parseUndirectedGraph(String inputFileName, String fileWithNoCoords, boolean verbose) {
 		
 		RelativeMatrix nodesMem = null;
 		int maxIndex = -1;
@@ -359,7 +359,8 @@ public class GraphParser {
 								nodesCoord.set(x1, y1, nodeIndex);
 								u = nodeIndex;
 								nodes[nodeIndex] = new Node(x1, y1, nodeIndex);
-								System.out.println("nodes[" + nodeIndex + "] = (" + x1 + ", " + y1 + ")");
+								if (verbose)
+									System.out.println("nodes[" + nodeIndex + "] = (" + x1 + ", " + y1 + ")");
 								nodeIndex ++;
 							} 
 							else {	
@@ -370,7 +371,8 @@ public class GraphParser {
 								nodesCoord.set(x2, y2, nodeIndex);
 								v = nodeIndex;
 								nodes[nodeIndex] = new Node(x2, y2, nodeIndex);
-								System.out.println("nodes[" + nodeIndex + "] = (" + x2 + ", " + y2 + ")");
+								if (verbose)
+									System.out.println("nodes[" + nodeIndex + "] = (" + x2 + ", " + y2 + ")");
 								nodeIndex ++;
 							} 
 							else {	

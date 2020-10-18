@@ -858,7 +858,7 @@ public class LinSolver {
 	
 	public static void computeEnergy(String filename, String filenameNoCoords) throws IOException{
 		
-		UndirGraph graph = GraphParser.parseUndirectedGraph(filename, filenameNoCoords);
+		UndirGraph graph = GraphParser.parseUndirectedGraph(filename, filenameNoCoords, true);
 		
 		/*
 		 * Generating all Kekulé's structures
