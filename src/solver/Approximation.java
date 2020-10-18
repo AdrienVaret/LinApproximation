@@ -249,11 +249,6 @@ public class Approximation {
 	
 	public static List<Interval> computeIntervals(UndirGraph molecule, ArrayList<Integer> cycle, EdgeSet edges){
 		
-		System.out.println(cycle);
-		
-		if (cycle.toString().equals("[5, 18, 5, 19, 8, 9, 8, 11, 9, 10, 10, 14, 11, 13, 12, 14, 12, 15, 13, 17, 15, 25, 16, 18, 16, 21, 17, 26, 19, 22, 20, 23, 20, 24, 21, 26, 22, 23, 24, 29, 25, 27, 27, 37, 29, 32, 30, 35, 30, 37, 32, 35]"))
-			System.out.print("");
-		
 		List<Interval> intervals = new ArrayList<Interval>();
 	
 		int [] edgesOK = new int [edges.size()];
@@ -267,7 +262,6 @@ public class Approximation {
 				int y1 = Math.min(u1.getY(), v1.getY());
 				int y2 = Math.max(u1.getY(), v1.getY());
 				
-				//List<Integer> sameLineNodes = new ArrayList<Integer>();
 				List<NodeSameLine> sameLineNodes = new ArrayList<NodeSameLine>();
 				
 				for (int j = (i+1) ; j < edges.size() ; j++) {
@@ -280,21 +274,16 @@ public class Approximation {
 						
 						if (y1 == y3 && y2 == y4) {
 							edgesOK[j] = 1;
-							//sameLineNodes.add(j);
 							sameLineNodes.add(new NodeSameLine(j, u2.getX()));
 						}
 					}
 				}
 				
-				/**/
 				sameLineNodes.add(new NodeSameLine(i, u1.getX()));
 				Collections.sort(sameLineNodes);
 				
-				//if (sameLineNodes.size() == 1) {
 				if (sameLineNodes.size() == 2) {
-					//intervals.add(new Interval(edges.getFirstVertices().get(i), edges.getSecondVertices().get(i), 
-					//			edges.getFirstVertices().get(sameLineNodes.get(0)), edges.getSecondVertices().get(sameLineNodes.get(0))));
-				
+
 					Node n1 = edges.getFirstVertices().get(sameLineNodes.get(0).getIndex());
 					Node n2 = edges.getSecondVertices().get(sameLineNodes.get(0).getIndex());
 					Node n3 = edges.getFirstVertices().get(sameLineNodes.get(1).getIndex());
@@ -317,53 +306,6 @@ public class Approximation {
 						
 						intervals.add(new Interval(n1, n2, n3, n4));
 					}
-					
-/*
-					int minIndex1 = i;
-					int minIndex2 = -1;
-					
-					int minX1 = edges.getFirstVertices().get(i).getX();
-					int minX2 = Integer.MAX_VALUE;
-					
-					for (Integer j : sameLineNodes) {
-						int x = edges.getFirstVertices().get(j).getX();
-						
-						if (x < minX1) {
-							minX2 = minX1;
-							minX1 = x;
-							minIndex2 = minIndex1;
-							minIndex1 = j;
-						}
-						
-						else if (x < minX2 && x > minX1) {
-							minX2 = x;
-							minIndex2 = j;
-						}
-					}
-					
-					Interval interval1 = new Interval(edges.getFirstVertices().get(minIndex1), edges.getSecondVertices().get(minIndex1), 
-							                          edges.getFirstVertices().get(minIndex2), edges.getSecondVertices().get(minIndex2));
-					
-					intervals.add(interval1);
-					
-					int index1 = -1, index2 = -1;
-					
-					for (Integer j : sameLineNodes) {
-						if (j != minIndex1 && j != minIndex2) {
-							if (index1 == -1)
-								index1 = j;
-							else
-								index2 = j;
-						}
-					}
-					
-					Interval interval2 = new Interval(edges.getFirstVertices().get(index1), edges.getSecondVertices().get(index1), 
-							                          edges.getFirstVertices().get(index2), edges.getSecondVertices().get(index2));
-					
-					intervals.add(interval2);
-					
-*/
-					
 				}
 			}
 		}
@@ -614,7 +556,7 @@ public class Approximation {
 		
 		log = new BufferedWriter(new FileWriter(new File("logs.txt")));
 		
-		String path = "/Users/adrien/molecules/molecules_CP/molecule_22.graph_coord";
+		String path = "/Users/adrien/molecules/molecules_CP/molecule_28.graph_coord";
 		
 		//String path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/2_crowns.graph_coord";
 		//String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph";
@@ -629,7 +571,7 @@ public class Approximation {
 	*/	
 		System.out.println("computing " + path + "\n");
 		
-		UndirGraph molecule = GraphParser.parseUndirectedGraph(path, null, true);
+		UndirGraph molecule = GraphParser.parseUndirectedGraph(path, null, false);
 		
 		long begin = System.currentTimeMillis();
 		computeEnergy(molecule);
