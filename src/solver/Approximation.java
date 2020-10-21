@@ -32,6 +32,176 @@ public class Approximation {
 	public static int [][] circuits;		
 	public static int [] circuitCount;
 	
+	public static ArrayList<Integer> getVerticalNeighborhood(Molecule molecule, int hexagon, int [][] edgesCorrespondances, boolean left) {
+		
+		ArrayList<Integer> edges = new ArrayList<Integer>();
+		
+		int [] hexagonVertices = molecule.getHexagons()[hexagon];
+		
+		int x, y1, y2;
+		
+		if (left) {
+			edges.add(edgesCorrespondances[hexagonVertices[4]][hexagonVertices[5]]);
+			System.out.println("adding (" + hexagonVertices[4] + ", " + hexagonVertices[5] + ")(" + edgesCorrespondances[hexagonVertices[4]][hexagonVertices[5]] + ")");
+			x = molecule.getNodesRefs()[hexagonVertices[4]].getX();
+			y1 = molecule.getNodesRefs()[hexagonVertices[4]].getY();
+			y2 = molecule.getNodesRefs()[hexagonVertices[5]].getY();
+		}
+		
+		else {
+			edges.add(edgesCorrespondances[hexagonVertices[1]][hexagonVertices[2]]);
+			System.out.println("adding (" + hexagonVertices[1] + ", " + hexagonVertices[2] + ")(" + edgesCorrespondances[hexagonVertices[1]][hexagonVertices[2]] + ")");
+			x = molecule.getNodesRefs()[hexagonVertices[1]].getX();
+			y1 = molecule.getNodesRefs()[hexagonVertices[1]].getY();
+			y2 = molecule.getNodesRefs()[hexagonVertices[2]].getY();
+		}
+		
+		
+		
+		for (int i = 0 ; i < molecule.getNbNodes() ; i++) {
+			
+			for (int j = (i + 1) ; j < molecule.getNbNodes() ; j++) {
+				
+				if (molecule.getAdjacencyMatrix()[i][j] == 1) {
+					
+					Node u = molecule.getNodesRefs()[i];
+					Node v = molecule.getNodesRefs()[j];
+					
+					if (left) {
+						if ((u.getX() == v.getX()) && (u.getX() < x) && 
+								((u.getY() == y1 && v.getY() == y2) ||  (u.getY() == y2 && v.getY() == y1))) {
+									
+								edges.add(edgesCorrespondances[i][j]);
+								System.out.println("adding (" + i + ", " + j + ")(" + edgesCorrespondances[i][j] + ")");
+							}
+					}
+					
+					else {
+						if ((u.getX() == v.getX()) && (u.getX() > x) && 
+							((u.getY() == y1 && v.getY() == y2) ||  (u.getY() == y2 && v.getY() == y1))) {
+								
+							edges.add(edgesCorrespondances[i][j]);
+							System.out.println("adding (" + i + ", " + j + ")(" + edgesCorrespondances[i][j] + ")");
+						}
+					}
+					
+					
+				}
+			}
+		}
+		
+		System.out.println("");
+		
+		return edges;
+	}
+	
+	public static void computeCyclesRelatedToOneHexagon(Molecule molecule, int hexagon) {
+		
+		int [] firstVertices = new int [molecule.getNbEdges()];
+		int [] secondVertices = new int [molecule.getNbEdges()];
+		
+		GraphModel model = new GraphModel("Cycles");
+
+		UndirectedGraph GLB = new UndirectedGraph(model, molecule.getNbNodes(), SetType.BITSET, false);
+		UndirectedGraph GUB = new UndirectedGraph(model, molecule.getNbNodes(), SetType.BITSET, false);
+
+		for (int i = 0; i < molecule.getNbNodes(); i++) {
+			GUB.addNode(i);
+
+			for (int j = (i + 1); j < molecule.getNbNodes(); j++) {
+				if (molecule.getAdjacencyMatrix()[i][j] == 1) {
+					GUB.addEdge(i, j);
+				}
+			}
+		}
+
+		UndirectedGraphVar g = model.graphVar("g", GLB, GUB);
+
+		BoolVar[] boolEdges = new BoolVar[molecule.getNbEdges()];
+		int [][] ME = new int [molecule.getNbNodes()][molecule.getNbNodes()];
+			
+		int index = 0;
+		for (int i = 0 ; i < molecule.getNbNodes() ; i++) {
+			for (int j = (i+1) ; j < molecule.getNbNodes() ; j++) {
+
+				if (molecule.getAdjacencyMatrix()[i][j] == 1) {
+					boolEdges[index] = model.boolVar("(" + i + "--" + j + ")");
+					model.edgeChanneling(g, boolEdges[index], i, j).post();
+					firstVertices[index] = i;
+					secondVertices[index] = j;
+					ME[i][j] = index;
+					ME[j][i] = index;
+					index ++;
+				}
+			}
+		}
+			
+		ArrayList<Integer> leftVerticalEdges = getVerticalNeighborhood(molecule, hexagon, ME, true);
+		ArrayList<Integer> rightVerticalEdges = getVerticalNeighborhood(molecule, hexagon, ME, false);
+		
+		BoolVar[] left = new BoolVar[leftVerticalEdges.size()];
+		BoolVar[] right = new BoolVar[rightVerticalEdges.size()];
+		
+		for (int i = 0 ; i < left.length ; i++) {
+			left[i] = boolEdges[leftVerticalEdges.get(i)];
+		}
+		
+		for (int i = 0 ; i < right.length ; i++) {
+			right[i] = boolEdges[rightVerticalEdges.get(i)];
+		}
+		
+		model.sum(left, ">=", 1).post();
+		model.sum(right, ">=", 1).post();
+		
+		model.minDegrees(g, 2).post();
+		model.maxDegrees(g, 2).post();
+		model.connected(g).post();
+			
+		
+		model.or(
+			model.and(model.arithm(model.nbNodes(g), "=", 6), model.sum(boolEdges, "=", 6)),
+			model.and(model.arithm(model.nbNodes(g), "=", 10), model.sum(boolEdges, "=", 10)),
+			model.and(model.arithm(model.nbNodes(g), "=", 14), model.sum(boolEdges, "=", 14)),
+			model.and(model.arithm(model.nbNodes(g), "=", 18), model.sum(boolEdges, "=", 18)),
+			model.and(model.arithm(model.nbNodes(g), "=", 22), model.sum(boolEdges, "=", 22)),
+			model.and(model.arithm(model.nbNodes(g), "=", 26), model.sum(boolEdges, "=", 26))
+		).post();
+			
+		model.getSolver().setSearch(new IntStrategy(boolEdges, new FirstFail(model), new IntDomainMin()));
+		Solver solver = model.getSolver();
+
+		Solution solution;
+			
+		while(solver.solve()){
+			solution = new Solution(model);
+			solution.record();
+					
+			ArrayList<Integer> cycle = new ArrayList<Integer>();
+
+			for (int i = 0 ; i < boolEdges.length ; i++) {
+				if (solution.getIntVal(boolEdges[i]) == 1) {
+					cycle.add(firstVertices[i]);
+					cycle.add(secondVertices[i]);
+				}
+			}
+			
+			EdgeSet verticalEdges = computeStraightEdges(molecule, cycle);
+			ArrayList<Interval> intervals = (ArrayList<Interval>) computeIntervals(molecule, cycle, verticalEdges);
+			Collections.sort(intervals);
+			int cycleConfiguration = Utils.identifyCycle(molecule, cycle, intervals);
+			
+			if (cycleConfiguration != -1) {
+				List<Integer> hexagons = getHexagons(molecule, cycle, intervals);
+				System.out.println(hexagons);
+			}
+			
+			
+			//treatCycle(molecule, cycle);
+		}
+		
+		//displayResults();
+	}
+	
 	public static void computeResonanceEnergy(Molecule molecule) {
 
 		energies = Utils.initEnergies();
@@ -347,9 +517,10 @@ public class Approximation {
 		
 		//String path = "/Users/adrien/molecules/molecules_CP/molecule_5.graph_coord";
 		
-		//String path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/2_crowns.graph_coord";
+		String path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph_coord";
 		//String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph";
 		
+		/*
 		if (args.length < 1) {
 			System.err.println("ERROR: invalid argument(s)");
 			System.err.println("USAGE: java -jar Approximation.jar ${input_file_name}");
@@ -357,7 +528,9 @@ public class Approximation {
 		}
 		
 		String path = args[0];
+		*/
 		
+		/*
 		System.out.println("computing " + path + "\n");
 		
 		Molecule molecule = GraphParser.parseUndirectedGraph(path, null, false);
@@ -367,5 +540,10 @@ public class Approximation {
 		long end = System.currentTimeMillis();
 		long time = end - begin;
 		System.out.println("time : " + time + " ms.");
+		*/
+		
+		Molecule molecule = GraphParser.parseUndirectedGraph(path, null, false);
+		computeCyclesRelatedToOneHexagon(molecule, 3);
+		
 	}
 }
