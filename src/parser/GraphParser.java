@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import graphs.Node;
-import graphs.UndirGraph;
+import graphs.Molecule;
 import graphs.UndirPonderateGraph;
 import utils.RelativeMatrix;
 import utils.Utils;
@@ -28,7 +28,7 @@ public class GraphParser {
 		return (splittedLine[0].equals("h"));
 	}
 	
-	public static UndirPonderateGraph exportSolutionToPonderateGraph(UndirGraph graph, int [] edgesValues) {
+	public static UndirPonderateGraph exportSolutionToPonderateGraph(Molecule graph, int [] edgesValues) {
 		
 		int [][] adjacencyMatrix = new int [graph.getAdjacencyMatrix().length][graph.getAdjacencyMatrix()[0].length];
 		ArrayList<String> edgesString = new ArrayList<String>();
@@ -66,7 +66,7 @@ public class GraphParser {
 		
 	}
 	
-	public static void exportSolutionToPonderateGraphFile(String filename, UndirGraph graph, int [] edgesValues) {
+	public static void exportSolutionToPonderateGraphFile(String filename, Molecule graph, int [] edgesValues) {
 		
 		try {
 			BufferedWriter w = new BufferedWriter(new FileWriter(new File(filename)));
@@ -222,7 +222,7 @@ public class GraphParser {
 		return null;
 	}
 	
-	public static UndirGraph parseUndirectedGraph(String inputFileName, String fileWithNoCoords, boolean verbose) {
+	public static Molecule parseUndirectedGraph(String inputFileName, String fileWithNoCoords, boolean verbose) {
 		
 		RelativeMatrix nodesMem = null;
 		int maxIndex = -1;
@@ -398,7 +398,7 @@ public class GraphParser {
 			
 			r.close();
 			
-			return new UndirGraph(nbNodes, nbEdges, nbHexagons, edgesMatrix, 
+			return new Molecule(nbNodes, nbEdges, nbHexagons, edgesMatrix, 
 					adjacencyMatrix, edgesStrings, hexagonsStrings, nodes, nodesCoord, nodesMem, maxIndex);
 		} catch (IOException e) {
 			e.printStackTrace();

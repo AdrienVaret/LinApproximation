@@ -17,7 +17,7 @@ import org.chocosolver.util.objects.graphs.DirectedGraph;
 import org.chocosolver.util.objects.setDataStructures.SetType;
 import graphs.Arc;
 import graphs.Node;
-import graphs.UndirGraph;
+import graphs.Molecule;
 import graphs.UndirPonderateGraph;
 import parser.GraphParser;
 import utils.Cycle;
@@ -38,7 +38,7 @@ public class BenzenoidsSolver {
     //DEBUG
     private static ArrayList<Integer> nbCyclesList = new ArrayList<Integer>();
     private static int nbStruct = 0;
-    public static UndirGraph gr;
+    public static Molecule gr;
     private static String pathNoCoords = null;
     
     private static final int MAX_CYCLE_SIZE = 10;
@@ -70,7 +70,7 @@ public class BenzenoidsSolver {
     
     public static void generateLewisStructures(String path, boolean allSolutions) throws IOException {
 
-        UndirGraph graph = GraphParser.parseUndirectedGraph(path, pathNoCoords, true);
+        Molecule graph = GraphParser.parseUndirectedGraph(path, pathNoCoords, true);
         Model model = new Model("Lewis Structures");
 
         graph.exportToGraphviz("graph_output");

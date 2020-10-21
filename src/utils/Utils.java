@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import graphs.Node;
-import graphs.UndirGraph;
+import graphs.Molecule;
 import solver.Approximation;
 import solver.BenzenoidsSolver;
 
@@ -281,7 +281,7 @@ public class Utils {
 		return false;
 	}
 	
-	public static int identifyCycle(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
+	public static int identifyCycle(Molecule molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
 		
 		Interval i0 = null;
 		Interval i1 = null;
@@ -1482,5 +1482,39 @@ public class Utils {
 				l.add(i);
 		
 		return l.toString();
+	}
+	
+	public static void main(String [] args) throws IOException{
+		
+		BufferedReader r = new BufferedReader(new FileReader(new File("/Users/adrien/molecules/molecules_CP/comparaison.txt")));
+		
+		ArrayList<Double> lin = new ArrayList<Double>();
+		ArrayList<Double> fan = new ArrayList<Double>();
+		
+		String line = null;
+		boolean linResult = true;
+		
+		while ((line = r.readLine()) != null) {
+			
+			if (line.equals(""))
+				linResult = false;
+			
+			else {
+				double time = (double)(Integer.parseInt(line)) / (double)(1000);
+			
+				if (linResult)
+					lin.add(time);
+				else
+					fan.add(time);
+			}
+		}
+		
+		r.close();
+		
+		System.out.println("molecule\t\tlin_time\tlin&fan_time\n");
+		
+		for (int i = 0 ; i < lin.size() ; i++) {
+			System.out.println("molecule_" + (i + 1) + "\t\t" + lin.get(i) + "\t\t" + fan.get(i));
+		}
 	}
 }

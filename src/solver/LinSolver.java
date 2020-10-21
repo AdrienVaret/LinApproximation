@@ -18,7 +18,7 @@ import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
 import org.chocosolver.solver.variables.BoolVar;
 
 import graphs.Edge;
-import graphs.UndirGraph;
+import graphs.Molecule;
 import graphs.UndirPonderateGraph;
 import parser.GraphParser;
 
@@ -858,7 +858,7 @@ public class LinSolver {
 	
 	public static void computeEnergy(String filename, String filenameNoCoords) throws IOException{
 		
-		UndirGraph graph = GraphParser.parseUndirectedGraph(filename, filenameNoCoords, true);
+		Molecule graph = GraphParser.parseUndirectedGraph(filename, filenameNoCoords, true);
 		
 		/*
 		 * Generating all Kekulé's structures

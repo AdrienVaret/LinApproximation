@@ -2,7 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 
-import graphs.UndirGraph;
+import graphs.Molecule;
 import solver.Approximation;
 
 public class CycleIdentifier {
@@ -49,7 +49,7 @@ public class CycleIdentifier {
 		return false;
 	}
 	
-	public static int identifyCircuitV2(UndirGraph molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
+	public static int identifyCircuitV2(Molecule molecule, ArrayList<Integer> cycle, ArrayList<Interval> intervals) {
 		
 		Interval i0 = null;
 		Interval i1 = null;

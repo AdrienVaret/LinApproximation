@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import utils.Interval;
 import utils.RelativeMatrix;
 
-public class UndirGraph {
+public class Molecule {
 	
 	private RelativeMatrix nodesMem; //DEBUG
 	
@@ -31,7 +31,7 @@ public class UndirGraph {
 	 * Constructors
 	 */
 	
-	public UndirGraph(int nbNodes, int nbEdges, int nbHexagons, ArrayList<ArrayList<Integer>> edgeMatrix,
+	public Molecule(int nbNodes, int nbEdges, int nbHexagons, ArrayList<ArrayList<Integer>> edgeMatrix,
 			int[][] adjacencyMatrix, ArrayList<String> edgesString, ArrayList<String> hexagonsString,
 			Node[] nodesRefs, RelativeMatrix coords) {
 
@@ -51,7 +51,7 @@ public class UndirGraph {
 		computeDualGraph();
 	}
 	
-	public UndirGraph(int nbNodes, int nbEdges, int nbHexagons, ArrayList<ArrayList<Integer>> edgeMatrix,
+	public Molecule(int nbNodes, int nbEdges, int nbHexagons, ArrayList<ArrayList<Integer>> edgeMatrix,
 			int[][] adjacencyMatrix, ArrayList<String> edgesString, ArrayList<String> hexagonsString,
 			Node[] nodesRefs, RelativeMatrix coords, RelativeMatrix nodesMem, int maxIndex) {
 

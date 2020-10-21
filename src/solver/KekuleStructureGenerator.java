@@ -18,7 +18,7 @@ import org.chocosolver.solver.search.strategy.strategy.IntStrategy;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.IntVar;
 
-import graphs.UndirGraph;
+import graphs.Molecule;
 import parser.GraphParser;
 
 public class KekuleStructureGenerator {
@@ -40,7 +40,7 @@ public class KekuleStructureGenerator {
 	private static long timeAllDiffConstraint;
 	private static long timeSumConstraints;
 	
-	public static int computeKekuleStructuresAllDiffConstraint(UndirGraph molecule) {
+	public static int computeKekuleStructuresAllDiffConstraint(Molecule molecule) {
 	
 		long begin = System.currentTimeMillis();
 		
@@ -168,7 +168,7 @@ public class KekuleStructureGenerator {
 	 * SOMME
 	 */
 	
-	public static int computeKekuleStructuresSumConstraints(UndirGraph molecule) {
+	public static int computeKekuleStructuresSumConstraints(Molecule molecule) {
 		
 		long begin = System.currentTimeMillis();
 		
@@ -249,7 +249,7 @@ public class KekuleStructureGenerator {
 		
 		w = new BufferedWriter(new FileWriter(new File("kekule_structures"), true));
 		
-		UndirGraph molecule = GraphParser.parseUndirectedGraph(filename, filenameNoCoords, true);
+		Molecule molecule = GraphParser.parseUndirectedGraph(filename, filenameNoCoords, true);
 		
 		int nbStructuresSumConstraints = computeKekuleStructuresSumConstraints(molecule);
 		int nbStructuresAllDiffConstraint = computeKekuleStructuresAllDiffConstraint(molecule);
