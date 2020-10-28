@@ -1,15 +1,18 @@
 package graphs;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import utils.Interval;
 import utils.RelativeMatrix;
+
+import static java.lang.ProcessBuilder.Redirect.appendTo;
 
 public class Molecule {
 	
@@ -303,8 +306,104 @@ private void computeDualGraph() {
 				hexagonsVertices.get(coords.get(x, y)).add(i);
 			}
 		}
-
-
-
+	}
+	
+	public ArrayList<ArrayList<Integer>> getOrbits() throws IOException {
+		
+		exportToNautyScript("tmp");
+		
+		ProcessBuilder pb = new ProcessBuilder("nauty26r12/dreadnaut");
+		pb.redirectInput(new File("tmp"));
+		pb.redirectOutput(appendTo(new File("output")));
+		Process p = pb.start();
+		
+		while(p.isAlive()) {}
+		
+		BufferedReader r = new BufferedReader(new FileReader(new File("output")));
+		StringBuilder output = new StringBuilder();
+		String line = null;
+		boolean add = false;
+		
+		while ((line = r.readLine()) != null) {
+			String [] splittedLine = line.split(" ");
+			if (add) 
+				output.append(line);
+			else if (splittedLine.length > 0 && splittedLine[0].equals("cpu"))
+				add = true;
+		}
+		
+		r.close();
+		
+		String orbitsStr = output.toString().trim().replaceAll(" +", " ");
+		
+		ProcessBuilder rm = new ProcessBuilder("rm", "tmp", "output");
+		Process prm = rm.start();
+		
+		while(prm.isAlive()) {}
+		
+		ArrayList<ArrayList<Integer>> orbits = new ArrayList<ArrayList<Integer>>();
+		String [] splittedOrbits = orbitsStr.split(Pattern.quote("; "));
+		
+		for (int i = 0 ; i < splittedOrbits.length ; i++) {
+			
+			String orbitStr;
+			if (i < splittedOrbits.length - 1)
+				orbitStr = splittedOrbits[i];
+			else
+				orbitStr = splittedOrbits[i].substring(0, splittedOrbits[i].length() - 1);
+			
+			String [] splittedOrbit = orbitStr.split(" ");
+			
+			ArrayList<Integer> orbit = new ArrayList<Integer>();
+			
+			if (splittedOrbit.length == 1)
+				orbit.add(Integer.parseInt(splittedOrbit[0]));
+			else {
+				for (int j = 0 ; j < splittedOrbit.length - 1 ; j ++) {
+					orbit.add(Integer.parseInt(splittedOrbit[j]));
+				}
+			}
+			
+			orbits.add(orbit);
+				
+		}
+		
+		return orbits;
+	}
+	
+	public void exportToNautyScript(String outputFilename) throws IOException{
+		
+		BufferedWriter w = new BufferedWriter(new FileWriter(new File(outputFilename)));
+		
+		w.write("n = " + nbHexagons + "\n");
+		w.write("g" + "\n");
+		
+		ArrayList<ArrayList<Integer>> neighbors = new ArrayList<ArrayList<Integer>>();
+		
+		for (int i = 0 ; i < dualGraph.length ; i++)
+			neighbors.add(new ArrayList<Integer>());
+		
+		for (int i = 0 ; i < dualGraph.length ; i++) {
+			for (int j = 0 ; j < dualGraph[i].length ; j++) {
+				int v = dualGraph[i][j];
+				if (v != -1) {
+					if (!neighbors.get(v).contains(i))
+						neighbors.get(i).add(v);
+				}
+			}
+		}
+		
+		for (int i = 0 ; i < dualGraph.length ; i++) {
+			w.write(i + " : ");
+			for (Integer u : neighbors.get(i)) {
+				w.write(u + " ");
+			}
+			w.write(";\n");
+		}
+		
+		w.write("x\n");
+		w.write("o\n");
+		
+		w.close();
 	}
 }
