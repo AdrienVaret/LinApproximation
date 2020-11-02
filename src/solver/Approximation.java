@@ -3,10 +3,16 @@ package solver;
 import org.chocosolver.solver.Solution;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.variables.*;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import org.chocosolver.graphsolver.GraphModel;
 import org.chocosolver.graphsolver.variables.UndirectedGraphVar;
 import org.chocosolver.util.objects.graphs.UndirectedGraph;
@@ -25,6 +31,10 @@ import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
 import org.chocosolver.solver.search.strategy.selectors.variables.FirstFail;
 
 public class Approximation {
+	
+	static BufferedWriter log = null;
+	private static String path = null;
+	private static String nautyDirectory;
 	
 	private static final int MAX_CYCLE_SIZE = 4;
 	
@@ -205,7 +215,7 @@ public class Approximation {
 					if (hexagonTreated == hexagon) {
 						for (int size = 0 ; size < 4 ; size ++) {
 						
-							if (energiesCycle[idHexagon][size] != 0);
+							if (energiesCycle[idHexagon][size] != 0)
 								circuits[hexagon][size] += energiesCycle[idHexagon][size] * nbPerfectMatchings;			
 						}
 					}
@@ -221,7 +231,7 @@ public class Approximation {
 		//displayResults();
 	}
 	
-	public static void computeResonanceEnergy(Molecule molecule) {
+	public static void computeResonanceEnergy(Molecule molecule) throws IOException {
 
 		energies = Utils.initEnergies();
 		circuits = new int[molecule.getNbHexagons()][MAX_CYCLE_SIZE];		
@@ -301,32 +311,49 @@ public class Approximation {
 		displayResults();
 	}
 	
-	public static void displayResults() {
+	public static void displayResults() throws IOException{
+		
+		//BufferedWriter w = new BufferedWriter(new FileWriter(new File(outputFileName)));
 		
 		System.out.println("");
 		System.out.println("LOCAL ENERGY");
+		
+		log.write(path + "\n");
+		log.write("LOCAL ENERGY" + "\n");
 		
 		int [] globalEnergy = new int[MAX_CYCLE_SIZE];
 		
 		for (int i = 0 ; i < circuits.length ; i++) {
 			System.out.print("H" + i + " : ");
+			log.write("H" + i + " : ");
 			
 			for (int j = 0 ; j < MAX_CYCLE_SIZE ; j++) {
 				
 				System.out.print(circuits[i][j] + " ");
+				log.write(circuits[i][j] + " ");
 				globalEnergy[j] += circuits[i][j];
 			}
 			
 			System.out.println("");
+			log.write("\n");
 		}
 		
 		System.out.println("");
 		System.out.print("GLOBAL ENERGY : ");
 		
-		for (int i = 0 ; i < globalEnergy.length ; i++)
+		log.write("\n");
+		log.write("GLOBAL ENERGY : \n");
+		
+		for (int i = 0 ; i < globalEnergy.length ; i++) {
 			System.out.print(globalEnergy[i] + " ");
+			log.write(globalEnergy[i] + " ");
+		}
 		System.out.println("");
 		System.out.println("");
+		
+		log.write("\n");
+		
+		//log.close();
 		
 	}
 	
@@ -535,11 +562,21 @@ public class Approximation {
 	 
 	public static void computeResonanceEnergyWithSymmetries(Molecule molecule) throws IOException{
 		
+		energies = Utils.initEnergies();
+		circuits = new int[molecule.getNbHexagons()][MAX_CYCLE_SIZE];		
+		circuitCount = new int[energies.length];
+		
 		ArrayList<ArrayList<Integer>> orbits = molecule.getOrbits();
 		
 		for (ArrayList<Integer> orbit : orbits) {
 			int hexagon = orbit.get(0);
 			computeCyclesRelatedToOneHexagon(molecule, hexagon);
+			int [] result = circuits[hexagon];
+			
+			for (int i = 1 ; i < orbit.size() ; i++) {
+				int symmetricHexagon = orbit.get(i);
+				circuits[symmetricHexagon] = result;
+			}
 		}
 		
 		displayResults();
@@ -547,33 +584,75 @@ public class Approximation {
 	
 	public static void main(String[] args) throws IOException {
 		
-		//String path = "/Users/adrien/molecules/molecules_CP/molecule_26.graph_coord";
-		//String path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph_coord";
+		//path = "/Users/adrien/molecules/molecules_CP/molecule_26.graph_coord";
+		//path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph_coord";
 		//String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph";
 		
+		boolean symmetries = false;;
 		
 		if (args.length < 1) {
 			System.err.println("ERROR: invalid argument(s)");
-			System.err.println("USAGE: java -jar Approximation.jar ${input_file_name}");
+			System.err.println("USAGE: java -jar Approximation.jar ${input_file_name} [-s | --symm]");
 			System.exit(1);
 		}
 		
-		String path = args[0];
+		path = args[0];
 		
+		if (args.length > 1 && (args[1].equals("-s") || args[1].equals("--symm")))
+			symmetries = true;
+			
+		nautyDirectory = null;
 		
+		if (symmetries) {
+			
+			if (args.length > 2)
+				nautyDirectory = args[2];
+			else
+				nautyDirectory = "./";
+				
+		}
+			
+		
+		StringBuilder b = new StringBuilder();
+		String [] splittedFilename = path.split(Pattern.quote("."));
+		
+		for (int i = 0 ; i < splittedFilename.length - 1 ; i++) {
+			b.append(splittedFilename[i] + ".");
+		}
+		
+		if (symmetries)
+			b.append("log_symm");
+		else
+			b.append("log");
+		
+		String outputFileName = b.toString();
+		
+		log = new BufferedWriter(new FileWriter(new File(outputFileName)));
 		
 		System.out.println("computing " + path + "\n");
 		
 		Molecule molecule = GraphParser.parseUndirectedGraph(path, null, false);
-/*		
-		long begin = System.currentTimeMillis();
-		computeResonanceEnergy(molecule); 
-		long end = System.currentTimeMillis();
-		long time = end - begin;
-		System.out.println("time : " + time + " ms.");
-*/
+
+		if (!symmetries) {
+			long begin = System.currentTimeMillis();
+			computeResonanceEnergy(molecule); 
+			long end = System.currentTimeMillis();
+			long time = end - begin;
+			System.out.println("time : " + time + " ms.");
+			log.write("time : " + time + " ms." + "\n");
+		}
 		
-		computeResonanceEnergyWithSymmetries(molecule);
+		else {
+			long begin = System.currentTimeMillis();
+			computeResonanceEnergyWithSymmetries(molecule);
+			long end = System.currentTimeMillis();
+			long time = end - begin;
+			System.out.println("time : " + time + " ms.");
+			log.write("time : " + time + " ms." + "\n");
+		}
+			
+		
+		log.close();
 		
 	}
 }

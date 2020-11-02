@@ -308,11 +308,11 @@ private void computeDualGraph() {
 		}
 	}
 	
-	public ArrayList<ArrayList<Integer>> getOrbits() throws IOException {
+	public ArrayList<ArrayList<Integer>> getOrbits(/*String nautyDirectory*/) throws IOException {
 		
 		exportToNautyScript("tmp");
 		
-		ProcessBuilder pb = new ProcessBuilder("nauty26r12/dreadnaut");
+		ProcessBuilder pb = new ProcessBuilder(/*nautyDirectory + */"nauty26r12/dreadnaut");
 		pb.redirectInput(new File("tmp"));
 		pb.redirectOutput(appendTo(new File("output")));
 		Process p = pb.start();

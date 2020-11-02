@@ -64,24 +64,7 @@ public class Test {
 	   return Math.atan2(v1.getX(), v1.getY()) - Math.atan2(v2.getX(), v2.getY());
 	}
 	
-	public static void main(String[] args) {
-		//test1();
-		//test2();
-		//test3();
-		//testPosition(0);
-		//testPosition(1);
-		//testPosition(2);
-		//testPosition(3);
-		//testPosition(4);
-		//testPosition(5);
-		//test4();
-		//System.out.println(orientedAngle(new Point(2, 0), new Point(0, 0), new Point(-1, 2)));
-		//System.out.println(orientedAngle(new Point(0, 0), new Point(2, 0), new Point(3, 2)));
-		////System.out.println(orientedAngle(new Point(0, 0), new Point(-1, 2), new Point(0, 4)));
-		//System.out.println(orientedAngle(new Point(2,0), new Point(0,0), new Point(1,2)));
-		//System.out.println(orientedAngle(new Point(1,2), new Point(0,0), new Point(2,0)));
-		
-		System.out.println(orientedAngle(new Point(3, 6), new Point(2,4), new Point(3, 2)));
-		System.out.println(orientedAngle(new Point(3, 6), new Point(2,4), new Point(0, 4)));
+	public static void main(String[] args) throws InterruptedException {
+		Thread.sleep(3600000);
 	}
 }
