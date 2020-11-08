@@ -1,0 +1,9 @@
+rectangle_1_3.graph_coord symmetries
+LOCAL ENERGY
+H0 : 2 1 1 0 
+H1 : 2 2 0 0 
+H2 : 2 1 1 0 
+
+GLOBAL ENERGY : 
+6 4 2 0 
+time : 206 ms.

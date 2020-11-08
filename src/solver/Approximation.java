@@ -35,6 +35,7 @@ public class Approximation {
 	static BufferedWriter log = null;
 	private static String path = null;
 	private static String nautyDirectory;
+	private static boolean symmetries;
 	
 	private static final int MAX_CYCLE_SIZE = 4;
 	
@@ -313,12 +314,16 @@ public class Approximation {
 	
 	public static void displayResults() throws IOException{
 		
-		//BufferedWriter w = new BufferedWriter(new FileWriter(new File(outputFileName)));
-		
 		System.out.println("");
 		System.out.println("LOCAL ENERGY");
 		
-		log.write(path + "\n");
+		log.write(path);
+		
+		if (symmetries)
+			log.write(" symmetries\n");
+		else 
+			log.write("\n");
+		
 		log.write("LOCAL ENERGY" + "\n");
 		
 		int [] globalEnergy = new int[MAX_CYCLE_SIZE];
@@ -566,7 +571,7 @@ public class Approximation {
 		circuits = new int[molecule.getNbHexagons()][MAX_CYCLE_SIZE];		
 		circuitCount = new int[energies.length];
 		
-		ArrayList<ArrayList<Integer>> orbits = molecule.getOrbits();
+		ArrayList<ArrayList<Integer>> orbits = molecule.getOrbits(nautyDirectory);
 		
 		for (ArrayList<Integer> orbit : orbits) {
 			int hexagon = orbit.get(0);
@@ -588,7 +593,7 @@ public class Approximation {
 		//path = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph_coord";
 		//String pathNoCoords = "/Users/adrien/CLionProjects/ConjugatedCycles/molecules/coronnoids/3_crowns.graph";
 		
-		boolean symmetries = false;;
+		symmetries = false;;
 		
 		if (args.length < 1) {
 			System.err.println("ERROR: invalid argument(s)");
@@ -608,7 +613,7 @@ public class Approximation {
 			if (args.length > 2)
 				nautyDirectory = args[2];
 			else
-				nautyDirectory = "./";
+				nautyDirectory = ".";
 				
 		}
 			

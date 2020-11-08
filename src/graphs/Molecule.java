@@ -308,18 +308,27 @@ private void computeDualGraph() {
 		}
 	}
 	
-	public ArrayList<ArrayList<Integer>> getOrbits(/*String nautyDirectory*/) throws IOException {
+	public ArrayList<ArrayList<Integer>> getOrbits(String nautyDirectory) throws IOException {
 		
-		exportToNautyScript("tmp");
+		String tmpFilename = nautyDirectory + "/" + "tmp_nauty";
+		String outputFilename = nautyDirectory + "/" + "output";
 		
-		ProcessBuilder pb = new ProcessBuilder(/*nautyDirectory + */"nauty26r12/dreadnaut");
-		pb.redirectInput(new File("tmp"));
-		pb.redirectOutput(appendTo(new File("output")));
+		System.out.println("tmpFilename : " + tmpFilename);
+		System.out.println("outputFilename : " + outputFilename);
+		System.out.println("");
+		
+		exportToNautyScript(tmpFilename);
+		
+		System.out.println("running : " + nautyDirectory + "/nauty26r12/dreadnaut");
+		
+		ProcessBuilder pb = new ProcessBuilder(nautyDirectory + "/nauty26r12/dreadnaut");
+		pb.redirectInput(new File(tmpFilename));
+		pb.redirectOutput(appendTo(new File(outputFilename)));
 		Process p = pb.start();
 		
-		while(p.isAlive()) {}
+		while(p.isAlive()) {}	
 		
-		BufferedReader r = new BufferedReader(new FileReader(new File("output")));
+		BufferedReader r = new BufferedReader(new FileReader(new File(outputFilename)));
 		StringBuilder output = new StringBuilder();
 		String line = null;
 		boolean add = false;
@@ -336,7 +345,10 @@ private void computeDualGraph() {
 		
 		String orbitsStr = output.toString().trim().replaceAll(" +", " ");
 		
-		ProcessBuilder rm = new ProcessBuilder("rm", "tmp", "output");
+		System.out.println("orbitsStr : " + orbitsStr);
+		
+		
+		ProcessBuilder rm = new ProcessBuilder("rm", tmpFilename, outputFilename);
 		Process prm = rm.start();
 		
 		while(prm.isAlive()) {}
