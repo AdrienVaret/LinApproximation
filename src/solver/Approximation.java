@@ -161,8 +161,17 @@ public class Approximation {
 			right[i] = boolEdges[rightVerticalEdges.get(i)];
 		}
 		
-		model.sum(left, "=", 1).post(); //>= avant
-		model.sum(right, "=", 1).post();
+		//model.sum(left, "=", 1).post(); //>= avant
+		//model.sum(right, "=", 1).post();
+		
+		//model.or(left).post();
+		//model.or(right).post();
+		
+		//model.arithm(left[0], "=", 1).post();
+		//model.arithm(right[0], "=", 1).post();
+		
+		model.or(model.sum(left, "=", 1), model.arithm(left[0], "=", 1)).post();
+		model.or(model.sum(right, "=", 1), model.arithm(right[0], "=", 1)).post();
 		
 		model.minDegrees(g, 2).post();
 		model.maxDegrees(g, 2).post();
@@ -634,9 +643,11 @@ public class Approximation {
 		
 		log = new BufferedWriter(new FileWriter(new File(outputFileName)));
 		
+		System.out.println("writing on : " + outputFileName);
+		
 		System.out.println("computing " + path + "\n");
 		
-		Molecule molecule = GraphParser.parseUndirectedGraph(path, null, false);
+		Molecule molecule = GraphParser.parseUndirectedGraph(path, null, true);
 
 		if (!symmetries) {
 			long begin = System.currentTimeMillis();

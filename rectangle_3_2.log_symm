@@ -1,0 +1,12 @@
+/Users/adrien/eclipse-workspace/LinApproximation/rectangle_3_2.graph_coord symmetries
+LOCAL ENERGY
+H0 : 6 5 3 0 
+H1 : 10 4 0 0 
+H2 : 8 5 1 0 
+H3 : 2 3 5 4 
+H4 : 6 5 3 0 
+H5 : 10 4 0 0 
+
+GLOBAL ENERGY : 
+42 26 12 4 
+time : 417 ms.
