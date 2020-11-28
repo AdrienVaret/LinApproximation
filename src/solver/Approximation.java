@@ -647,7 +647,7 @@ public class Approximation {
 		
 		System.out.println("computing " + path + "\n");
 		
-		Molecule molecule = GraphParser.parseUndirectedGraph(path, null, true);
+		Molecule molecule = GraphParser.parseUndirectedGraph(path, null, false);
 
 		if (!symmetries) {
 			long begin = System.currentTimeMillis();

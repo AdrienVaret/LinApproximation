@@ -372,7 +372,16 @@ private void computeDualGraph() {
 				orbit.add(Integer.parseInt(splittedOrbit[0]));
 			else {
 				for (int j = 0 ; j < splittedOrbit.length - 1 ; j ++) {
-					orbit.add(Integer.parseInt(splittedOrbit[j]));
+					String [] testSplit = splittedOrbit[j].split(Pattern.quote(":"));
+					
+					if (testSplit.length == 1) {
+						orbit.add(Integer.parseInt(splittedOrbit[j]));
+					}
+					
+					else {
+						for (int k = Integer.parseInt(testSplit[0]) ; k <= Integer.parseInt(testSplit[1]) ; k++)
+							orbit.add(k);
+					}
 				}
 			}
 			
