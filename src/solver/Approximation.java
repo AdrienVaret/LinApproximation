@@ -170,6 +170,8 @@ public class Approximation {
 		//model.arithm(left[0], "=", 1).post();
 		//model.arithm(right[0], "=", 1).post();
 		
+		
+		
 		model.or(model.sum(left, "=", 1), model.arithm(left[0], "=", 1)).post();
 		model.or(model.sum(right, "=", 1), model.arithm(right[0], "=", 1)).post();
 		
