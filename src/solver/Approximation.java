@@ -170,7 +170,64 @@ public class Approximation {
 		//model.arithm(left[0], "=", 1).post();
 		//model.arithm(right[0], "=", 1).post();
 		
+		/* Taille de la bande centrale */
 		
+		IntVar[] indexesLeft = new IntVar[left.length];
+		IntVar[] indexesRight = new IntVar[right.length];
+		
+		int maxSize = left.length + right.length - 1;
+		
+		int [] domainLeft = new int [left.length];
+		for (int i = 0 ; i < left.length ; i++)
+			domainLeft[i] = i;
+		
+		int [] domainRight = new int [right.length];
+		for (int i = 0 ; i < right.length ; i++) 
+			domainRight[i] = left.length + i;
+		
+		for (int i = 0 ; i < indexesLeft.length ; i++) {
+			indexesLeft[i] = model.intVar("ILeft_" + i, new int [] {0, domainLeft[i]});
+		}
+		
+		for (int i = 0 ; i < indexesRight.length ; i++) {
+			indexesRight[i] = model.intVar("IRight_" + i, new int [] {0, domainRight[i]});
+		}
+		
+		/*
+		 * Fixing indexes variables values
+		 */
+		
+		for (int i = 0 ; i < left.length ; i++) {
+			
+			model.ifThenElse(left[i], 
+					         model.arithm(indexesLeft[i], "=", i), 
+					         model.arithm(indexesLeft[i], "=", 0));
+			
+		}
+		
+		for (int i = 0 ; i < right.length ; i++) {
+			
+			model.ifThenElse(right[i], 
+					         model.arithm(indexesRight[i], "=", left.length + i), 
+					         model.arithm(indexesRight[i], "=", 0));
+		}
+		
+		IntVar sumLeft = model.intVar("sumLeft", domainLeft);
+		IntVar sumRight = model.intVar("sumRight", domainRight);
+		
+		model.sum(indexesLeft, "=", sumLeft).post();
+		model.sum(indexesRight, "=", sumRight).post();
+		
+		int [] maxSizeDomain = new int [maxSize + 1];
+		for (int i = 0 ; i <= maxSize ; i++) {
+			maxSizeDomain[i] = i;
+		}
+		
+		IntVar taille = model.intVar("sizeBand", maxSizeDomain);
+			
+		model.sum(new IntVar[] {taille, sumLeft}, "=", sumRight).post();
+		model.arithm(taille, "<=", 5).post();
+		model.arithm(taille, ">", 0).post();
 		
 		model.or(model.sum(left, "=", 1), model.arithm(left[0], "=", 1)).post();
 		model.or(model.sum(right, "=", 1), model.arithm(right[0], "=", 1)).post();
